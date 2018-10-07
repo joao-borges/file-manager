@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+<log4j:configuration xmlns:log4j='http://jakarta.apache.org/log4j/'>
+	<appender name="STDOUT" class="org.apache.log4j.ConsoleAppender">
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d [Thread: %t] %-5p %c - %m%n" />
+		</layout>
+	</appender>
+	<appender name="ROOT_FILE" class="org.apache.log4j.RollingFileAppender">
+		<param name="file" value="renomeador.log" />
+		<param name="maxFileSize" value="5000KB" />
+		<param name="maxBackupIndex" value="2" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d [Thread: %t] %-5p %c - %m%n" />
+		</layout>
+	</appender>
+	<appender name="ROOT_ASYNC" class="org.apache.log4j.AsyncAppender">
+		<param name="bufferSize" value="128" />
+		<appender-ref ref="STDOUT" />
+		<appender-ref ref="ROOT_FILE" />
+	</appender>
+
+
+	<logger name="br.com.joaoborges" additivity="false">
+		<level value="debug" />
+		<appender-ref ref="ROOT_ASYNC" />
+	</logger>
+
+	<logger name="org.springframework" additivity="false">
+		<level value="error" />
+		<appender-ref ref="ROOT_ASYNC" />
+	</logger>
+
+
+
+	<!--  ######################## ROOT LOGGER ######################### -->
+
+	<root>
+		<level value="error" />
+		<appender-ref ref="ROOT_ASYNC" />
+	</root>
+
+</log4j:configuration>

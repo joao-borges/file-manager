@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<exclusions>
+	<exclusion value="50 cent" />
+	<exclusion value="20darook" />
+	<exclusion value="t-pain" />
+	<exclusion value="ne-yo" />
+	<exclusion value="20 fingers" />
+	<exclusion value="x-five" />
+</exclusions>
