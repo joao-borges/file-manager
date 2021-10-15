@@ -3,8 +3,7 @@ package br.com.joaoborges.filemanager.operations.renaming;
 import java.io.File;
 import java.util.Collection;
 
-import org.apache.commons.lang3.text.WordUtils;
-import org.apache.log4j.Logger;
+import org.apache.commons.text.WordUtils;
 import org.jaudiotagger.audio.AudioFile;
 import org.jaudiotagger.audio.AudioFileIO;
 import org.jaudiotagger.tag.FieldKey;
@@ -20,6 +19,7 @@ import br.com.joaoborges.filemanager.operations.Utilitario;
 import br.com.joaoborges.filemanager.operations.renaming.Renomeador.RenamingResult;
 import br.com.joaoborges.filemanager.type.FileType;
 import br.com.joaoborges.filemanager.type.ReplacingConstants;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Renomeador de arquivos de audio.
@@ -29,12 +29,12 @@ import br.com.joaoborges.filemanager.type.ReplacingConstants;
  * @author João
  */
 @Service(value = AudioPostProcessor.Audio_Post_Processor)
+@Slf4j
 public class AudioPostProcessor implements PostProcessor {
 
 	/** Audio_Post_Processor */
 	public static final String Audio_Post_Processor = BEAN_NAME_FORMAT + FileType.AUDIO;
 	private static final long serialVersionUID = -3089259692194594010L;
-	private static final Logger LOGGER = Logger.getLogger(AudioPostProcessor.class);
 
 	@Autowired
 	private RenamingOperations renamingOperations;
@@ -42,7 +42,7 @@ public class AudioPostProcessor implements PostProcessor {
 	private ExclusionManagerService exclusions;
 
 	public String processFileName(String fileName) {
-		LOGGER.debug("Operacoes customizadas para " + fileName);
+		log.debug("Operacoes customizadas para " + fileName);
 		String[] name = this.splitName(fileName);
 
 		if (name.length == 2) {
@@ -96,7 +96,7 @@ public class AudioPostProcessor implements PostProcessor {
 	@Override
 	public void processFile(FileDTO fileToRename, RenamingResult result, Collection<String> originalFileLis)
 			throws FileManagerException {
-		LOGGER.debug("Operacoes customizadas de arquivo para " + fileToRename.getFile().getAbsolutePath());
+		log.debug("Operacoes customizadas de arquivo para " + fileToRename.getFile().getAbsolutePath());
 
 		try {
 			AudioFile f = AudioFileIO.read(fileToRename.getFile());
@@ -130,7 +130,7 @@ public class AudioPostProcessor implements PostProcessor {
 				result.getRenamedFiles().remove(fileToRename.getFile().getPath());
 				result.getRenamedFiles().put(newFile.getPath(), fileToRename.getFile().getPath());
 
-				LOGGER.debug("Nome final: " + newName);
+				log.debug("Nome final: " + newName);
 			} else {
 				String[] fileInfo = this.splitName(Utilitario.splitExtension(fileToRename.getFile().getName())[0]);
 				tag.setField(FieldKey.ARTIST, fileInfo[0].trim());
@@ -147,8 +147,8 @@ public class AudioPostProcessor implements PostProcessor {
 			f.commit();
 
 		} catch (Exception e) {
-			LOGGER.error("Erro nas operacoes customizadas!");
-			LOGGER.error(e.getMessage(), e);
+			log.error("Erro nas operacoes customizadas!");
+			log.error(e.getMessage(), e);
 			throw new FileManagerException("Erro para alterar as propriedades do arquivo de audio.", e);
 		}
 

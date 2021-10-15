@@ -3,19 +3,17 @@ package br.com.joaoborges.filemanager.type;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
-import org.apache.log4j.Logger;
-
 import br.com.joaoborges.filemanager.exception.FileManagerException;
 import br.com.joaoborges.filemanager.exception.FileManagerRuntimeException;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Tipos genericos de arquivos que classificam um servico.
  * 
  * @author Joao
  */
+@Slf4j
 public class FileType {
-
-	private static final Logger LOGGER = Logger.getLogger(FileType.class);
 
 	public static final String ALL_FILES = "ALL_FILES";
 	public static final String AUDIO = "AUDIO";
@@ -34,8 +32,8 @@ public class FileType {
 		try {
 			return Integer.parseInt(type);
 		} catch (NumberFormatException e) {
-			LOGGER.debug(type + " nao e um tipo valido");
-			LOGGER.debug(e.getMessage(), e);
+			log.debug(type + " nao e um tipo valido");
+			log.debug(e.getMessage(), e);
 			throw new FileManagerRuntimeException("Tipo inválido: " + type, e);
 		}
 	}
@@ -58,8 +56,8 @@ public class FileType {
 			}
 			return fieldName;
 		} catch (Exception e) {
-			LOGGER.error("Erro para interpretar o tipo");
-			LOGGER.error(e.getMessage(), e);
+			log.error("Erro para interpretar o tipo");
+			log.error(e.getMessage(), e);
 			throw new FileManagerRuntimeException(e.getMessage(), e);
 		}
 	}

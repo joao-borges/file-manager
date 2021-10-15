@@ -12,29 +12,23 @@
 package br.com.joaoborges.filemanager.operations.common;
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileFilter;
-
-import org.apache.log4j.Logger;
 
 import br.com.joaoborges.filemanager.exception.FileManagerException;
 import br.com.joaoborges.filemanager.exception.InvalidDirectoryException;
 import br.com.joaoborges.filemanager.exception.OperationCancelledException;
 import br.com.joaoborges.filemanager.model.Diretorio;
 import br.com.joaoborges.filemanager.model.FiltroExtensoes;
-import br.com.joaoborges.filemanager.operations.interfaces.FileOperation;
-import br.com.joaoborges.filemanager.operations.interfaces.OperationResult;
 import br.com.joaoborges.filemanager.type.Extensao;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author JoãoGabriel
  */
+@Slf4j
 public class DirectoryReader {
-
-	private static final Logger LOGGER = Logger.getLogger(DirectoryReader.class);
 
 	/**
 	 * Lê um diretorio.
@@ -68,10 +62,10 @@ public class DirectoryReader {
 		if (option == JFileChooser.APPROVE_OPTION) {
 			currentDirectory = fc.getSelectedFile();
 			if (currentDirectory == null) {
-				LOGGER.debug("diretorio invalido");
+				log.debug("diretorio invalido");
 				throw new InvalidDirectoryException();
 			}
-			LOGGER.debug(currentDirectory.getAbsolutePath());
+			log.debug(currentDirectory.getAbsolutePath());
 			FileFilter filter = fc.getFileFilter();
 			FiltroExtensoes filtro = null;
 			if (filter instanceof FiltroExtensoes) {

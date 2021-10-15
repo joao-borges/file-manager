@@ -2,7 +2,6 @@ package br.com.joaoborges.filemanager.ui.operations;
 
 import javax.swing.JOptionPane;
 
-import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -17,6 +16,7 @@ import br.com.joaoborges.filemanager.operations.interfaces.FileOperation;
 import br.com.joaoborges.filemanager.operations.interfaces.OperationResult;
 import br.com.joaoborges.filemanager.ui.TelaPrincipal;
 import br.com.joaoborges.filemanager.ui.utils.WaitingScreenControl;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Processo que roda a operação.
@@ -25,9 +25,8 @@ import br.com.joaoborges.filemanager.ui.utils.WaitingScreenControl;
  */
 @Component
 @Scope(value = BeanDefinition.SCOPE_PROTOTYPE)
+@Slf4j
 public class OperationProcess implements Runnable {
-
-	private static final Logger LOGGER = Logger.getLogger(OperationProcess.class);
 
 	@Autowired
 	private TelaPrincipal tela;
@@ -62,7 +61,7 @@ public class OperationProcess implements Runnable {
 		} catch (FileManagerException e) {
 			control.interruptWaiting();
 			this.operationRunner.notifyFail(e, this.tela.getFrame());
-			LOGGER.warn(e.getMessage(), e);
+			log.warn(e.getMessage(), e);
 		}
 
 	}

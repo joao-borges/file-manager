@@ -5,15 +5,15 @@ import java.awt.event.ActionListener;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import javax.swing.*;
+import javax.swing.AbstractButton;
 
-import org.apache.log4j.Logger;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import br.com.joaoborges.filemanager.operations.common.SpringUtils;
 import br.com.joaoborges.filemanager.ui.operations.OperationProcess;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Listener que é disparado quando o usuario solicita uma operacao.
@@ -22,14 +22,13 @@ import br.com.joaoborges.filemanager.ui.operations.OperationProcess;
  */
 @Component
 @Scope(value = BeanDefinition.SCOPE_PROTOTYPE)
+@Slf4j
 public class OperationExecuteListener implements ActionListener {
-
-	private static final Logger LOGGER = Logger.getLogger(OperationExecuteListener.class);
 
 	private ExecutorService threadPool = Executors.newFixedThreadPool(10);
 
 	public void actionPerformed(ActionEvent event) {
-		LOGGER.debug("Executando!");
+		log.debug("Executando!");
 		AbstractButton source = (AbstractButton) event.getSource();
 
 		String actionID = source.getActionCommand();

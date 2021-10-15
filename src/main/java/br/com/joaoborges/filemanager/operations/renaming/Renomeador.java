@@ -8,7 +8,6 @@ import java.util.Map;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.text.WordUtils;
-import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +24,7 @@ import br.com.joaoborges.filemanager.operations.interfaces.OperationResult;
 import br.com.joaoborges.filemanager.operations.renaming.Renomeador.RenamingResult;
 import br.com.joaoborges.filemanager.type.Extensao;
 import br.com.joaoborges.filemanager.type.ReplacingConstants;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Servico responsavel por aplicar as regras e devolver os nomes novos para os arquivos.
@@ -32,12 +32,12 @@ import br.com.joaoborges.filemanager.type.ReplacingConstants;
  * @author Joao
  */
 @Service(value = OperationConstants.RENAME_OPERATION)
+@Slf4j
 public class Renomeador implements FileOperation<RenamingResult> {
 
 	static final String INCLUDE_SUB_DIRECTORIES = "INCLUDE_SUB_DIRECTORIES";
 
 	private static final long serialVersionUID = -8287266807900801749L;
-	private static final Logger LOGGER = Logger.getLogger(Renomeador.class);
 
 	@Autowired
 	private ExclusionManagerService exclusions;
@@ -72,7 +72,7 @@ public class Renomeador implements FileOperation<RenamingResult> {
 			RenamingResult result) {
 		Collection<String> originalFileList = contentDirectory.listFileNames(filtroSolicitado);
 		Collection<File> conteudo = contentDirectory.listarConteudo(filtroSolicitado);
-		LOGGER.debug("Total " + conteudo.size());
+		log.debug("Total " + conteudo.size());
 		// itera sobre a colecao de arquivos para renomea-los
 		for (File fileToRename : conteudo) {
 			if (fileToRename.isDirectory()) {
@@ -82,7 +82,7 @@ public class Renomeador implements FileOperation<RenamingResult> {
 				try {
 					// transacao, para voltar atras caso cague
 					String originalName = fileToRename.getName();
-					LOGGER.debug("Renomeando: " + originalName);
+					log.debug("Renomeando: " + originalName);
 
 					String newName = originalName;
 					newName = newName.trim().toLowerCase();
@@ -118,7 +118,7 @@ public class Renomeador implements FileOperation<RenamingResult> {
 						fileToRename.renameTo(renamedFile);
 
 						result.renamedFiles.put(renamedFile.getPath(), fileToRename.getPath());
-						LOGGER.debug("Nome final: " + newName);
+						log.debug("Nome final: " + newName);
 						// chama a rotina de operacoes adicionais, se houver
 						if (postProcessor != null) {
 							postProcessor.processFile(new FileDTO(renamedFile, ext, contentDirectory), result, originalFileList);
@@ -127,9 +127,9 @@ public class Renomeador implements FileOperation<RenamingResult> {
 					}
 
 				} catch (Exception e) {
-					LOGGER.error("ERRO!!!!");
-					LOGGER.error(e.getMessage(), e);
-					LOGGER.error("Há um problema com o arquivo " + fileToRename.getName());
+					log.error("ERRO!!!!");
+					log.error(e.getMessage(), e);
+					log.error("Há um problema com o arquivo " + fileToRename.getName());
 				}
 			}
 		}

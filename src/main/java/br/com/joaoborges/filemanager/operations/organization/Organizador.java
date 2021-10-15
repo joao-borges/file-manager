@@ -20,7 +20,6 @@ import java.util.TreeMap;
 
 import org.apache.commons.io.FileExistsException;
 import org.apache.commons.io.FileUtils;
-import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
 
 import br.com.joaoborges.filemanager.exception.FileManagerException;
@@ -28,14 +27,14 @@ import br.com.joaoborges.filemanager.model.Diretorio;
 import br.com.joaoborges.filemanager.model.FiltroExtensoes;
 import br.com.joaoborges.filemanager.operations.common.OperationConstants;
 import br.com.joaoborges.filemanager.operations.interfaces.FileOperation;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author JoãoGabriel
  */
 @Service(value = OperationConstants.ORGANIZATION_OPERATION)
+@Slf4j
 public class Organizador implements FileOperation<OrganizationResult> {
-
-	private static final Logger LOGGER = Logger.getLogger(Organizador.class);
 
 	/** serialVersionUID */
 	private static final long serialVersionUID = 2135777385329465832L;
@@ -76,7 +75,7 @@ public class Organizador implements FileOperation<OrganizationResult> {
 				try {
 					FileUtils.moveFile(originalFile, destFile);
 				} catch (FileExistsException e) {
-					LOGGER.warn(e.getMessage());
+					log.warn(e.getMessage());
 				} catch (IOException e) {
 					throw new FileManagerException(e.getMessage(), e);
 				}

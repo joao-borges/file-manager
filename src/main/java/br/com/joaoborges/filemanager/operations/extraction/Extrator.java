@@ -10,16 +10,11 @@
  */
 package br.com.joaoborges.filemanager.operations.extraction;
 
-import static br.com.joaoborges.filemanager.operations.common.OperationConstants.EXTRACTION_OPERATION;
-import static org.apache.commons.io.FileUtils.moveFile;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.commons.io.FileExistsException;
-import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
 
 import br.com.joaoborges.filemanager.exception.FileManagerException;
@@ -28,14 +23,17 @@ import br.com.joaoborges.filemanager.model.FiltroExtensoes;
 import br.com.joaoborges.filemanager.operations.common.OperationConstants;
 import br.com.joaoborges.filemanager.operations.interfaces.FileOperation;
 import br.com.joaoborges.filemanager.operations.organization.OrganizationParamsBuilder;
+import lombok.extern.slf4j.Slf4j;
+
+import static br.com.joaoborges.filemanager.operations.common.OperationConstants.EXTRACTION_OPERATION;
+import static org.apache.commons.io.FileUtils.moveFile;
 
 /**
  * @author joaoborges
  */
 @Service(value = OperationConstants.EXTRACTION_OPERATION)
+@Slf4j
 public class Extrator implements FileOperation<ExtractionResult> {
-
-    private static final Logger LOGGER = Logger.getLogger(Extrator.class);
 
     @Override
     public ExtractionResult execute(Map<String, Object> params) throws FileManagerException {
@@ -57,7 +55,7 @@ public class Extrator implements FileOperation<ExtractionResult> {
                 moveFile(file, newFile);
                 result.getMovedFiles().put(file.getPath(), newFile.getPath());
             } catch (FileExistsException e) {
-                LOGGER.warn(e.getMessage());
+                log.warn(e.getMessage());
             } catch (IOException e) {
                 throw new FileManagerException(e.getMessage(), e);
             }
