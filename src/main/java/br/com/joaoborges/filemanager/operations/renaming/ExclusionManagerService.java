@@ -13,8 +13,11 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Component;
 
 import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.security.AnyTypePermission;
 
 import lombok.extern.slf4j.Slf4j;
+
+import static com.thoughtworks.xstream.XStream.NO_REFERENCES;
 
 /**
  * Gerencia o carregamento dos trechos de nome que devem ser excluidos da operacao.
@@ -32,6 +35,10 @@ public class ExclusionManagerService implements InitializingBean {
     public void afterPropertiesSet() throws Exception {
         try {
             this.xStream = new XStream();
+            xStream.addPermission(AnyTypePermission.ANY);
+            xStream.ignoreUnknownElements();
+            xStream.setMode(NO_REFERENCES);
+            xStream.autodetectAnnotations(true);
             this.xStream.processAnnotations(ExclusionsBean.class);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
