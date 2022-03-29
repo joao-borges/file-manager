@@ -11,7 +11,7 @@ import java.util.ResourceBundle;
 
 /**
  * Localizador central de mensagens em catalogos.
- * 
+ *
  * @author Joao
  */
 public class Message {
@@ -22,8 +22,7 @@ public class Message {
 	 * Prefixo para todos os catalogos
 	 */
 	public final static String PREFIX = "br.com.joaoborges.filemanager.resources.";
-	
-	public final static String EXTENSOES = PREFIX + "Extensoes";
+
 	public final static String GRUPOSEXTENSOES = PREFIX + "GruposExtensoes";
 	public final static String STRINGSTOFILTER = PREFIX + "StringsToFilter";
 	public final static String REGEXESTOFILTER = PREFIX + "RegexesToFilter";
@@ -44,7 +43,7 @@ public class Message {
 	/**
 	 * Retorna um localizador {@link ResourceBundle} associado ao catalogo
 	 * informado, no locale enviado como parâmetro.
-	 * 
+	 *
 	 * @param catalogo
 	 *            Catalogo
 	 * @param locale
@@ -67,7 +66,7 @@ public class Message {
 	/**
 	 * Metodo retorna uma mensagem baseado em um codigo, e na lingua corrente.
 	 * Nao considera o locale, pega no idioma default.
-	 * 
+	 *
 	 * @param catalogo
 	 * @param msgID
 	 * @return
@@ -79,7 +78,7 @@ public class Message {
 	/**
 	 * Metodo retorna uma mensagem baseado em um codigo, e na lingua corrente, e
 	 * num locale especificado.
-	 * 
+	 *
 	 * @param catalogo
 	 * @param msgID
 	 * @param locale
@@ -121,7 +120,7 @@ public class Message {
 	 * Metodo retorna uma mensagem baseado em um codigo, e na lingua corrente
 	 * Metodo recebe um array de objects para serem inseridas na string de
 	 * retorno, nos locais determinados
-	 * 
+	 *
 	 * @param catalogo
 	 *            Catalogo onde se encontra a mensagem
 	 * @param msgID
@@ -142,7 +141,7 @@ public class Message {
 	 * Considera um locale para obtencao da mensagem em algum idioma especifico.
 	 * Caso o locale seja nulo, ou a mensagem Nao exista, pega no idioma
 	 * default.
-	 * 
+	 *
 	 * @param catalogo
 	 *            Catalogo onde se encontra a mensagem
 	 * @param msgID
@@ -162,7 +161,7 @@ public class Message {
 	 * Metodo retorna uma mensagem baseado em um codigo, e na lingua corrente
 	 * Metodo recebe um object para ser inserido na string de retorno, no local
 	 * determinado
-	 * 
+	 *
 	 * @param catalogo
 	 *            Catalogo onde se encontra a mensagem
 	 * @param msgID
@@ -183,10 +182,10 @@ public class Message {
 	 * Considera um locale para obtencao da mensagem em algum idioma especcfico.
 	 * Caso o locale seja nulo, ou a mensagem Nao exista, pega no idioma
 	 * default.
-	 * 
+	 *
 	 * @param catalogo
 	 *            Catalogo onde se encontra a mensagem
-	 * 
+	 *
 	 * @param msgID
 	 *            ID da mensagem no catalogo
 	 * @param arg
@@ -206,7 +205,7 @@ public class Message {
 	 * <p>
 	 * Se Nao encontrar, retorna nulo, em vez de uma mensagem padrao.
 	 * <p>
-	 * 
+	 *
 	 * @param catalogo
 	 *            Catalogo onde se encontra a mensagem.
 	 * @param msgID
@@ -223,7 +222,7 @@ public class Message {
 	 * <p>
 	 * Se Nao encontrar, retorna nulo, em vez de uma mensagem padrao.
 	 * <p>
-	 * 
+	 *
 	 * @param catalogo
 	 *            Catalogo onde se encontra a mensagem.
 	 * @param msgID
@@ -251,7 +250,7 @@ public class Message {
 
 	/**
 	 * Retorna uma configuracao sem especificar o locale.
-	 * 
+	 *
 	 * @param catalogo
 	 *            Catalogo.
 	 * @param msgID
@@ -267,7 +266,7 @@ public class Message {
 	 * <p>
 	 * Se Nao encontrar, retorna nulo, em vez de uma mensagem padrao.
 	 * <p>
-	 * 
+	 *
 	 * @param catalogo
 	 *            Catalogo.
 	 * @param msgID

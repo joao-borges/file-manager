@@ -22,11 +22,9 @@ import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 
 import org.apache.commons.lang3.SystemUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.SmartLifecycle;
 import org.springframework.stereotype.Component;
 
-import br.com.joaoborges.filemanager.operations.common.SpringUtils;
 import br.com.joaoborges.filemanager.ui.listener.AboutListener;
 import br.com.joaoborges.filemanager.ui.listener.ExitListener;
 import br.com.joaoborges.filemanager.ui.listener.OperationExecuteListener;
@@ -34,8 +32,10 @@ import br.com.joaoborges.filemanager.ui.utils.FileInfo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import static br.com.joaoborges.filemanager.operations.common.OperationConstants.DUPLICATE_FINDER_OPERATION;
 import static br.com.joaoborges.filemanager.operations.common.OperationConstants.EXTRACTION_OPERATION;
 import static br.com.joaoborges.filemanager.operations.common.OperationConstants.ORGANIZATION_OPERATION;
+import static br.com.joaoborges.filemanager.operations.common.OperationConstants.PHOTO_ORGANIZATION_OPERATION;
 import static br.com.joaoborges.filemanager.operations.common.OperationConstants.RENAME_OPERATION;
 
 /**
@@ -82,18 +82,26 @@ public class TelaPrincipal implements SmartLifecycle {
         organizar.setActionCommand(ORGANIZATION_OPERATION);
         JMenuItem extrair = new JMenuItem("Extrair arquivos");
         extrair.setActionCommand(EXTRACTION_OPERATION);
+        JMenuItem photoOrganization = new JMenuItem("Organizar Imagens por Data");
+        photoOrganization.setActionCommand(PHOTO_ORGANIZATION_OPERATION);
+        JMenuItem duplicateFinder = new JMenuItem("Remover Arquivos Duplicados");
+        duplicateFinder.setActionCommand(DUPLICATE_FINDER_OPERATION);
         JMenuItem sobre = new JMenuItem("Sobre");
         JMenuItem sair = new JMenuItem("Sair");
 
         renomear.addActionListener(listener);
         organizar.addActionListener(listener);
         extrair.addActionListener(listener);
+        photoOrganization.addActionListener(listener);
+        duplicateFinder.addActionListener(listener);
         sobre.addActionListener(new AboutListener(this));
         sair.addActionListener(new ExitListener(this));
 
         menuPrincipal.add(renomear);
         menuPrincipal.add(organizar);
         menuPrincipal.add(extrair);
+        menuPrincipal.add(photoOrganization);
+        menuPrincipal.add(duplicateFinder);
         menuPrincipal.add(sobre);
         menuPrincipal.add(sair);
         this.menu.add(menuPrincipal);

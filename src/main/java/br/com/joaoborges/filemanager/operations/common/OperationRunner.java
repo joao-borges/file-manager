@@ -49,7 +49,7 @@ public class OperationRunner {
     /**
      *
      */
-    public void notifyFail(FileManagerException e, java.awt.Component parentReference) {
+    public void notifyFail(Throwable e, java.awt.Component parentReference) {
         log.error("ERRO!!!!!");
         log.error(e.getMessage(), e);
         JOptionPane.showMessageDialog(parentReference, "Ocorreu um erro Inesperado.\n\n" + e.getMessage(), "Erro!",

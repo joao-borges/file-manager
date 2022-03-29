@@ -6,8 +6,8 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.lang3.StringEscapeUtils;
-import org.apache.commons.lang3.text.WordUtils;
+import org.apache.commons.text.StringEscapeUtils;
+import org.apache.commons.text.WordUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -28,7 +28,7 @@ import lombok.extern.slf4j.Slf4j;
 
 /**
  * Servico responsavel por aplicar as regras e devolver os nomes novos para os arquivos.
- * 
+ *
  * @author Joao
  */
 @Service(value = OperationConstants.RENAME_OPERATION)
@@ -44,7 +44,7 @@ public class Renomeador implements FileOperation<RenamingResult> {
 
 	/**
 	 * Renomeia os arquivos contidos na pasta.
-	 * 
+	 *
 	 * @throws FileManagerException
 	 *             em caso de erros.
 	 */
@@ -102,7 +102,7 @@ public class Renomeador implements FileOperation<RenamingResult> {
 					newName = newName.trim();
 					// monta o nome final e salva
 					newName += ReplacingConstants.POINT + extensao;
-					
+
 					// retira caracteres escapados
 					newName = StringEscapeUtils.unescapeXml(newName);
 
@@ -120,10 +120,7 @@ public class Renomeador implements FileOperation<RenamingResult> {
 						result.renamedFiles.put(renamedFile.getPath(), fileToRename.getPath());
 						log.debug("Nome final: " + newName);
 						// chama a rotina de operacoes adicionais, se houver
-						if (postProcessor != null) {
-							postProcessor.processFile(new FileDTO(renamedFile, ext, contentDirectory), result, originalFileList);
-						}
-
+						postProcessor.processFile(new FileDTO(renamedFile, ext, contentDirectory), result, originalFileList);
 					}
 
 				} catch (Exception e) {
@@ -166,7 +163,7 @@ public class Renomeador implements FileOperation<RenamingResult> {
 
 	/**
 	 * Faz as substituicoes de caracteres indevidos.
-	 * 
+	 *
 	 * @param newName
 	 * @return String
 	 */
@@ -242,7 +239,7 @@ public class Renomeador implements FileOperation<RenamingResult> {
 
 	/**
 	 * Resultado
-	 * 
+	 *
 	 * @author JoãoGabriel
 	 */
 	public class RenamingResult implements OperationResult {

@@ -7,7 +7,6 @@ import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
-import br.com.joaoborges.filemanager.exception.FileManagerException;
 import br.com.joaoborges.filemanager.exception.InvalidDirectoryException;
 import br.com.joaoborges.filemanager.exception.OperationCancelledException;
 import br.com.joaoborges.filemanager.operations.common.OperationRunner;
@@ -20,7 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 
 /**
  * Processo que roda a operação.
- * 
+ *
  * @author JoãoGabriel
  */
 @Component
@@ -58,7 +57,7 @@ public class OperationProcess implements Runnable {
 			control.interruptWaiting();
 			JOptionPane.showMessageDialog(this.tela.getFrame(), "Operacao cancelada pelo Usuario.", "Informacao",
 					JOptionPane.WARNING_MESSAGE);
-		} catch (FileManagerException e) {
+		} catch (RuntimeException | Error e) {
 			control.interruptWaiting();
 			this.operationRunner.notifyFail(e, this.tela.getFrame());
 			log.warn(e.getMessage(), e);

@@ -6,65 +6,69 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+
 import br.com.joaoborges.filemanager.model.FiltroExtensoes;
 import br.com.joaoborges.filemanager.model.util.Message;
 import br.com.joaoborges.filemanager.ui.FiltroExtensoesFilechooser;
 
 /**
  * Extensoes suportadas pelo sistema.
- * 
+ *
  * @author Joao
  */
 public enum Extensao {
 
 	/**
-	 * 
+	 *
 	 */
 	MP3(0, FileType.AUDIO),
 	/**
-	 * 
+	 *
 	 */
 	WMA(1, FileType.AUDIO),
 	/**
-	 * 
+	 *
 	 */
 	WMV(2, FileType.VIDEO),
 	/**
-	 * 
+	 *
 	 */
 	MPEG(3, FileType.VIDEO),
 	/**
-	 * 
+	 *
 	 */
 	MPG(3, FileType.VIDEO),
 	/**
-	 * 			 
+	 *
 	 */
 	WAV(4, FileType.AUDIO),
 	/**
-	 * 
+	 *
 	 */
 	JPG(5, FileType.IMAGE),
 	/**
-	 * 
+	 *
 	 */
 	JPEG(5, FileType.IMAGE),
 	/**
-	 * 
+	 *
 	 */
 	BMP(6, FileType.IMAGE),
+	PNG(6, FileType.IMAGE),
 	MOV(8, FileType.VIDEO),
+	MP4(8, FileType.VIDEO),
 	AVI(9, FileType.VIDEO),
 	TXT(7, FileType.TEXT);
 
-	private String descricao;
-	private int grupo;
-	private String tipo;
-	private String extensao;
+	private final String descricao;
+	private final int grupo;
+	private final String tipo;
+	private final String extensao;
 
 	private Extensao(int grupo, String tipo) {
 		this.grupo = grupo;
-		this.extensao = Message.getMessage(Message.EXTENSOES, this.name());
+		this.extensao = name().toLowerCase();
 		this.descricao = Message.getMessage(Message.GRUPOSEXTENSOES, Integer.toString(this.grupo));
 		this.tipo = tipo;
 	}
@@ -86,20 +90,7 @@ public enum Extensao {
 	}
 
 	public static List<String> asStrings() {
-		List<String> extensoes = new ArrayList<String>();
-		extensoes.add(MP3.extensao);
-		extensoes.add(WMA.extensao);
-		extensoes.add(WMV.extensao);
-		extensoes.add(MPEG.extensao);
-		extensoes.add(MPG.extensao);
-		extensoes.add(WAV.extensao);
-		extensoes.add(JPG.extensao);
-		extensoes.add(JPEG.extensao);
-		extensoes.add(BMP.extensao);
-		extensoes.add(BMP.extensao);
-		extensoes.add(TXT.extensao);
-		Collections.sort(extensoes);
-		return extensoes;
+		return Arrays.stream(Extensao.values()).map(e -> e.extensao).sorted().collect(Collectors.toList());
 	}
 
 	public static List<FiltroExtensoes> getFCFilters() {
