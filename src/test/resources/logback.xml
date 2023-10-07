@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSSXXX} [%thread] %-5level %logger{36} - %X{testrun} %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <logger name="br.com.joaoborges.filemanager" level="DEBUG"/>
+    <logger name="org.apache" level="WARN"/>
+    <logger name="org.hibernate" level="WARN"/>
+    <logger name="org.hibernate.SQL" level="WARN"/>
+    <logger name="Hypersistence Optimizer" level="info"/>
+    <logger name="org.springframework" level="WARN"/>
+    <logger name="com.miw.mcb.server.controller.WebLogController" level="TRACE"/>
+    <logger name="org.springframework.web" level="WARN"/>
+    <logger name="org.springframework.security" level="WARN"/>
+    <logger name="org.springframework.boot.devtools" level="INFO"/>
+    <logger name="org.thymeleaf" level="WARN"/>
+    <logger name="com.netflix.config" level="ERROR"/>
+    <logger name="com.zaxxer.hikari" level="WARN"/>
+    <logger name="org.hsqldb" level="INFO"/>
+    <logger name="ch.qos.logback" level="WARN"/>
+
+
+    <root level="INFO">
+        <appender-ref ref="CONSOLE"/>
+    </root>
+
+</configuration>

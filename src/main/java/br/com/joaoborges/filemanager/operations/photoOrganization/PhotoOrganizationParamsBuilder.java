@@ -65,7 +65,9 @@ public class PhotoOrganizationParamsBuilder implements OperationParamsBuilder {
                                                                               ObjectUtils.firstNonNull(this.lastReadDestDir, this.lastReadBaseDir));
         this.lastReadDestDir = directoryDestination.getDiretorio();
 
-        Map<String, Object> params = new HashMap<String, Object>();
+
+
+        Map<String, Object> params = new HashMap<>();
         params.put(BASE_DIR, directoryBase.getDiretorio());
         params.put(DEST_DIR, directoryDestination.getDiretorio());
         params.put(FiltroExtensoes.class.getName(), directoryBase.getFiltro());
