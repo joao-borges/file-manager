@@ -30,7 +30,7 @@ public enum Extensao {
 	/**
 	 *
 	 */
-	WMV(2, FileType.VIDEO),
+	WMV(3, FileType.VIDEO),
 	/**
 	 *
 	 */
@@ -56,9 +56,9 @@ public enum Extensao {
 	 */
 	BMP(6, FileType.IMAGE),
 	PNG(6, FileType.IMAGE),
-	MOV(8, FileType.VIDEO),
-	MP4(8, FileType.VIDEO),
-	AVI(9, FileType.VIDEO),
+	MOV(3, FileType.VIDEO),
+	MP4(3, FileType.VIDEO),
+	AVI(3, FileType.VIDEO),
 	TXT(7, FileType.TEXT);
 
 	private final String descricao;

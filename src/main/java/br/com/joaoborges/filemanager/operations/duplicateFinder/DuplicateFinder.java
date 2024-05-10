@@ -1,5 +1,14 @@
 package br.com.joaoborges.filemanager.operations.duplicateFinder;
 
+import br.com.joaoborges.filemanager.exception.FileManagerException;
+import br.com.joaoborges.filemanager.model.Diretorio;
+import br.com.joaoborges.filemanager.operations.interfaces.FileOperation;
+import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
+import org.springframework.stereotype.Service;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -9,17 +18,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.FilenameUtils;
-import org.springframework.stereotype.Service;
-
-import br.com.joaoborges.filemanager.exception.FileManagerException;
-import br.com.joaoborges.filemanager.model.Diretorio;
-import br.com.joaoborges.filemanager.operations.interfaces.FileOperation;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 import static br.com.joaoborges.filemanager.operations.common.OperationConstants.DUPLICATE_FINDER_OPERATION;
 
@@ -57,16 +55,16 @@ public class DuplicateFinder implements FileOperation<DuplicateFinderResult> {
 
         log.info("verificando total de {} arquivos", files.size());
         files.stream()
-            .collect(Collectors.groupingBy(FileWithHash::getMd5sum))
-            .entrySet()
-            .stream()
-            .filter(entry -> entry.getValue().size() > 1)
-            .forEach(entry -> {
-                entry.getValue()
-                    .stream()
-                    .filter(file -> FILE_WITH_INDEX.matcher(FilenameUtils.getBaseName(file.getFile().getName())).matches())
-                    .forEach(file -> resultado.getFiles().put(file.getFile().toString(), file.getMd5sum()));
-            });
+                .collect(Collectors.groupingBy(FileWithHash::md5sum))
+                .entrySet()
+                .stream()
+                .filter(entry -> entry.getValue().size() > 1)
+                .forEach(entry -> {
+                    entry.getValue()
+                            .stream()
+                            .filter(file -> FILE_WITH_INDEX.matcher(FilenameUtils.getBaseName(file.file().getName())).matches())
+                            .forEach(file -> resultado.getFiles().put(file.file().toString(), file.md5sum()));
+                });
 
         return resultado;
     }
@@ -81,11 +79,7 @@ public class DuplicateFinder implements FileOperation<DuplicateFinderResult> {
         return DUPLICATE_FINDER_OPERATION;
     }
 
-    @Getter
-    @RequiredArgsConstructor
-    private static class FileWithHash {
+    private record FileWithHash(File file, String md5sum) {
 
-        private final File file;
-        private final String md5sum;
     }
 }
