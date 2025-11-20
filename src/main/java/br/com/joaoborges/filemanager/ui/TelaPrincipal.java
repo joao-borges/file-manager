@@ -5,7 +5,7 @@ import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.util.List;
 
-import javax.annotation.PostConstruct;
+import jakarta.annotation.PostConstruct;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
