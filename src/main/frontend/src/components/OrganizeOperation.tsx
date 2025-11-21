@@ -21,9 +21,13 @@ import {
   Paper,
   Alert,
   CircularProgress,
+  InputAdornment,
+  IconButton,
 } from '@mui/material';
+import { FolderOpen as FolderOpenIcon } from '@mui/icons-material';
 import { organizeFiles } from '../services/api';
 import type { OrganizeResponse, ApiError } from '../types';
+import { DirectoryPicker } from './DirectoryPicker';
 
 /**
  * OrganizeOperation Component
@@ -37,6 +41,10 @@ const OrganizeOperation: FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [result, setResult] = useState<OrganizeResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
+
+  // Directory picker state
+  const [sourcePickerOpen, setSourcePickerOpen] = useState<boolean>(false);
+  const [destPickerOpen, setDestPickerOpen] = useState<boolean>(false);
 
   /**
    * Handle form submission
@@ -97,6 +105,20 @@ const OrganizeOperation: FC = () => {
           disabled={loading}
           required
           helperText="Diretório contendo os arquivos para organizar"
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position="end">
+                <IconButton
+                  edge="end"
+                  onClick={() => setSourcePickerOpen(true)}
+                  disabled={loading}
+                  title="Browse..."
+                >
+                  <FolderOpenIcon />
+                </IconButton>
+              </InputAdornment>
+            ),
+          }}
         />
 
         <TextField
@@ -110,6 +132,20 @@ const OrganizeOperation: FC = () => {
           disabled={loading}
           required
           helperText="Diretório onde os arquivos serão organizados por categoria"
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position="end">
+                <IconButton
+                  edge="end"
+                  onClick={() => setDestPickerOpen(true)}
+                  disabled={loading}
+                  title="Browse..."
+                >
+                  <FolderOpenIcon />
+                </IconButton>
+              </InputAdornment>
+            ),
+          }}
         />
 
         <Box sx={{ mt: 2 }}>
@@ -146,6 +182,28 @@ const OrganizeOperation: FC = () => {
           )}
         </Paper>
       )}
+
+      <DirectoryPicker
+        open={sourcePickerOpen}
+        onClose={() => setSourcePickerOpen(false)}
+        onSelect={(path) => {
+          setSourceDir(path);
+          setSourcePickerOpen(false);
+        }}
+        initialPath={sourceDir}
+        title="Select Source Directory"
+      />
+
+      <DirectoryPicker
+        open={destPickerOpen}
+        onClose={() => setDestPickerOpen(false)}
+        onSelect={(path) => {
+          setDestDir(path);
+          setDestPickerOpen(false);
+        }}
+        initialPath={destDir}
+        title="Select Destination Directory"
+      />
     </Box>
   );
 };

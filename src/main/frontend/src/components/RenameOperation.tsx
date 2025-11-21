@@ -22,9 +22,13 @@ import {
   CircularProgress,
   Checkbox,
   FormControlLabel,
+  InputAdornment,
+  IconButton,
 } from '@mui/material';
+import { FolderOpen as FolderOpenIcon } from '@mui/icons-material';
 import { renameFiles } from '../services/api';
 import type { RenameResponse, ApiError } from '../types';
+import { DirectoryPicker } from './DirectoryPicker';
 
 /**
  * RenameOperation Component
@@ -38,6 +42,9 @@ const RenameOperation: FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [result, setResult] = useState<RenameResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
+
+  // Directory picker state
+  const [pickerOpen, setPickerOpen] = useState<boolean>(false);
 
   /**
    * Handle form submission
@@ -98,6 +105,20 @@ const RenameOperation: FC = () => {
           disabled={loading}
           required
           helperText="Caminho completo do diretório contendo os arquivos"
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position="end">
+                <IconButton
+                  edge="end"
+                  onClick={() => setPickerOpen(true)}
+                  disabled={loading}
+                  title="Browse..."
+                >
+                  <FolderOpenIcon />
+                </IconButton>
+              </InputAdornment>
+            ),
+          }}
         />
 
         <FormControlLabel
@@ -145,6 +166,17 @@ const RenameOperation: FC = () => {
           )}
         </Paper>
       )}
+
+      <DirectoryPicker
+        open={pickerOpen}
+        onClose={() => setPickerOpen(false)}
+        onSelect={(path) => {
+          setSourceDir(path);
+          setPickerOpen(false);
+        }}
+        initialPath={sourceDir}
+        title="Select Source Directory"
+      />
     </Box>
   );
 };

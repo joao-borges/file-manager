@@ -27,6 +27,11 @@ export type {
   OperationState,
   FileInfo,
   DirectoryInfo,
+  FileSystemEntry,
+  ListDirectoryResponse,
+  GetRootsResponse,
+  GetHomeResponse,
+  ValidatePathResponse,
 } from './api.types';
 
 // Re-export all operation types

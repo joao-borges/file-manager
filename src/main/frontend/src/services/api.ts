@@ -25,6 +25,10 @@ import type {
   DuplicateRequest,
   DuplicateResponse,
   ApiError,
+  GetHomeResponse,
+  GetRootsResponse,
+  ListDirectoryResponse,
+  ValidatePathResponse,
 } from '../types';
 
 // ============================================================================
@@ -176,29 +180,87 @@ export const findDuplicates = async (params: DuplicateRequest): Promise<Duplicat
 };
 
 // ============================================================================
-// File System Services (Future Enhancement)
+// File System Browser Services
 // ============================================================================
 
 /**
- * List files in a directory
- * Note: This endpoint is not yet implemented in the backend
+ * Get user's home directory
  *
- * @param path - Directory path to list
- * @returns Promise resolving to file list
+ * @returns Promise resolving to home directory path
+ * @throws ApiError if the operation fails
+ *
+ * @example
+ * ```typescript
+ * const result = await getHomeDirectory();
+ * console.log(`Home: ${result.path}`);
+ * ```
  */
-export const listDirectory = async (path: string): Promise<unknown> => {
-  const response = await api.get('/files/list', { params: { path } });
+export const getHomeDirectory = async (): Promise<GetHomeResponse> => {
+  const response = await api.get<GetHomeResponse>('/filesystem/home');
   return response.data;
 };
 
 /**
- * Get supported file extensions
- * Note: This endpoint is not yet implemented in the backend
+ * Get system roots (drives on Windows, / on Unix)
  *
- * @returns Promise resolving to extension list
+ * @returns Promise resolving to list of root directories
+ * @throws ApiError if the operation fails
+ *
+ * @example
+ * ```typescript
+ * const result = await getRoots();
+ * console.log(`Roots: ${result.roots.map(r => r.path).join(', ')}`);
+ * ```
  */
-export const getExtensions = async (): Promise<unknown> => {
-  const response = await api.get('/files/extensions');
+export const getRoots = async (): Promise<GetRootsResponse> => {
+  const response = await api.get<GetRootsResponse>('/filesystem/roots');
+  return response.data;
+};
+
+/**
+ * List contents of a directory
+ *
+ * @param path - Directory path to list (optional, defaults to home)
+ * @param includeFiles - Whether to include files (default: false, directories only)
+ * @returns Promise resolving to directory contents
+ * @throws ApiError if the operation fails
+ *
+ * @example
+ * ```typescript
+ * const result = await listDirectory('/home/user');
+ * console.log(`Current: ${result.currentPath}`);
+ * result.entries.forEach(e => console.log(e.name));
+ * ```
+ */
+export const listDirectory = async (
+  path?: string,
+  includeFiles: boolean = false
+): Promise<ListDirectoryResponse> => {
+  const response = await api.get<ListDirectoryResponse>('/filesystem/list', {
+    params: { path, includeFiles },
+  });
+  return response.data;
+};
+
+/**
+ * Validate that a path exists and is accessible
+ *
+ * @param path - Path to validate
+ * @returns Promise resolving to path validation result
+ * @throws ApiError if the operation fails
+ *
+ * @example
+ * ```typescript
+ * const result = await validatePath('/some/path');
+ * if (result.exists && result.isDirectory) {
+ *   console.log('Valid directory');
+ * }
+ * ```
+ */
+export const validatePath = async (path: string): Promise<ValidatePathResponse> => {
+  const response = await api.get<ValidatePathResponse>('/filesystem/validate', {
+    params: { path },
+  });
   return response.data;
 };
 

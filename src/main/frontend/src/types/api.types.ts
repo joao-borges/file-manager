@@ -183,3 +183,55 @@ export interface DirectoryInfo {
   fileCount: number;
   totalSize: number;
 }
+
+// ============================================================================
+// File System Browser Types
+// ============================================================================
+
+/**
+ * File system entry (file or directory)
+ */
+export interface FileSystemEntry {
+  path: string;
+  name: string;
+  directory: boolean;
+  parent: boolean;
+  readable: boolean;
+  writable: boolean;
+  size?: number;
+  lastModified?: number;
+}
+
+/**
+ * Response from list directory endpoint
+ */
+export interface ListDirectoryResponse extends ApiResponse {
+  currentPath: string;
+  entries: FileSystemEntry[];
+}
+
+/**
+ * Response from get roots endpoint
+ */
+export interface GetRootsResponse extends ApiResponse {
+  roots: FileSystemEntry[];
+}
+
+/**
+ * Response from get home directory endpoint
+ */
+export interface GetHomeResponse extends ApiResponse {
+  path: string;
+}
+
+/**
+ * Response from validate path endpoint
+ */
+export interface ValidatePathResponse extends ApiResponse {
+  exists: boolean;
+  isDirectory: boolean;
+  isFile: boolean;
+  canRead: boolean;
+  canWrite: boolean;
+  absolutePath: string;
+}
