@@ -29,6 +29,7 @@ import { FolderOpen as FolderOpenIcon } from '@mui/icons-material';
 import { renameFiles } from '../services/api';
 import type { RenameResponse, ApiError } from '../types';
 import { DirectoryPicker } from './DirectoryPicker';
+import { ProgressDialog } from './ProgressDialog';
 
 /**
  * RenameOperation Component
@@ -176,6 +177,13 @@ const RenameOperation: FC = () => {
         }}
         initialPath={sourceDir}
         title="Select Source Directory"
+      />
+
+      <ProgressDialog
+        open={loading}
+        title="Renaming Files"
+        message="Please wait while we rename your files..."
+        detail={includeSubDirs ? 'Including subdirectories' : 'Current directory only'}
       />
     </Box>
   );

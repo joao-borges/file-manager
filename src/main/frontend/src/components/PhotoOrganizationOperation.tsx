@@ -24,6 +24,7 @@ import {
 } from '@mui/material';
 import { organizePhotos } from '../services/api';
 import type { PhotoOrganizeResponse, ApiError } from '../types';
+import { ProgressDialog } from './ProgressDialog';
 
 /**
  * PhotoOrganizationOperation Component
@@ -150,6 +151,12 @@ const PhotoOrganizationOperation: FC = () => {
           )}
         </Paper>
       )}
+
+      <ProgressDialog
+        open={loading}
+        title="Organizing Photos"
+        message="Please wait while we organize photos by EXIF date metadata..."
+      />
     </Box>
   );
 };

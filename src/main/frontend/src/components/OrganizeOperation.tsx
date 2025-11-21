@@ -28,6 +28,7 @@ import { FolderOpen as FolderOpenIcon } from '@mui/icons-material';
 import { organizeFiles } from '../services/api';
 import type { OrganizeResponse, ApiError } from '../types';
 import { DirectoryPicker } from './DirectoryPicker';
+import { ProgressDialog } from './ProgressDialog';
 
 /**
  * OrganizeOperation Component
@@ -203,6 +204,13 @@ const OrganizeOperation: FC = () => {
         }}
         initialPath={destDir}
         title="Select Destination Directory"
+      />
+
+      <ProgressDialog
+        open={loading}
+        title="Organizing Files"
+        message="Please wait while we organize your files by extension..."
+        detail={`From: ${sourceDir || '(not selected)'} → To: ${destDir || '(not selected)'}`}
       />
     </Box>
   );

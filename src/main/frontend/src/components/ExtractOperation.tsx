@@ -23,6 +23,7 @@ import {
 } from '@mui/material';
 import { extractFiles } from '../services/api';
 import type { ExtractResponse, ApiError } from '../types';
+import { ProgressDialog } from './ProgressDialog';
 
 /**
  * ExtractOperation Component
@@ -149,6 +150,12 @@ const ExtractOperation: FC = () => {
           )}
         </Paper>
       )}
+
+      <ProgressDialog
+        open={loading}
+        title="Extracting Files"
+        message="Please wait while we extract files from subdirectories..."
+      />
     </Box>
   );
 };

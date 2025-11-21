@@ -25,6 +25,7 @@ import {
 } from '@mui/material';
 import { findDuplicates } from '../services/api';
 import type { DuplicateResponse, ApiError } from '../types';
+import { ProgressDialog } from './ProgressDialog';
 
 /**
  * DuplicateFinderOperation Component
@@ -144,6 +145,12 @@ const DuplicateFinderOperation: FC = () => {
           )}
         </Paper>
       )}
+
+      <ProgressDialog
+        open={loading}
+        title="Finding Duplicates"
+        message="Please wait while we scan for duplicate files using MD5 hashes..."
+      />
     </Box>
   );
 };
