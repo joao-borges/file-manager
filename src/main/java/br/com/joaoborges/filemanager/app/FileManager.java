@@ -14,7 +14,17 @@ public class FileManager {
         Thread.setDefaultUncaughtExceptionHandler((t, e) -> e.printStackTrace());
 
         SpringApplication app = new SpringApplication(FileManager.class);
-        app.setHeadless(false);
+
+        // Check if running in web mode (default) or Swing mode
+        boolean webMode = true;
+        for (String arg : args) {
+            if ("--swing".equals(arg)) {
+                webMode = false;
+                break;
+            }
+        }
+
+        app.setHeadless(webMode);
         SpringUtils.setApplicationContext(app.run(args));
     }
 }

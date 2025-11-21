@@ -39,3 +39,10 @@ overlays/
 id_file
 
 db*
+
+# Frontend
+node/
+node_modules/
+src/main/frontend/node_modules/
+src/main/frontend/dist/
+src/main/resources/static/

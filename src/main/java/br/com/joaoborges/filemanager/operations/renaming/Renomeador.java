@@ -35,7 +35,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class Renomeador implements FileOperation<RenamingResult> {
 
-	static final String INCLUDE_SUB_DIRECTORIES = "INCLUDE_SUB_DIRECTORIES";
+	public static final String INCLUDE_SUB_DIRECTORIES = "INCLUDE_SUB_DIRECTORIES";
 
 	private static final long serialVersionUID = -8287266807900801749L;
 
