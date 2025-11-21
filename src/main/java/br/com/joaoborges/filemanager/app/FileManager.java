@@ -6,6 +6,14 @@ import org.springframework.context.annotation.ComponentScan;
 
 import br.com.joaoborges.filemanager.operations.common.SpringUtils;
 
+/**
+ * File Manager - Spring Boot Web Application
+ *
+ * Modern full-stack web application for file management operations.
+ * Provides REST API endpoints and serves a React + TypeScript frontend.
+ *
+ * Access the application at http://localhost:8080 after starting.
+ */
 @SpringBootApplication
 @ComponentScan("br.com.joaoborges.filemanager")
 public class FileManager {
@@ -15,16 +23,9 @@ public class FileManager {
 
         SpringApplication app = new SpringApplication(FileManager.class);
 
-        // Check if running in web mode (default) or Swing mode
-        boolean webMode = true;
-        for (String arg : args) {
-            if ("--swing".equals(arg)) {
-                webMode = false;
-                break;
-            }
-        }
+        // Always run as web application (headless mode)
+        app.setHeadless(true);
 
-        app.setHeadless(webMode);
         SpringUtils.setApplicationContext(app.run(args));
     }
 }

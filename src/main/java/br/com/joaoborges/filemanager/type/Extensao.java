@@ -10,7 +10,6 @@ import java.util.stream.Collectors;
 
 import br.com.joaoborges.filemanager.model.FiltroExtensoes;
 import br.com.joaoborges.filemanager.model.util.Message;
-import br.com.joaoborges.filemanager.ui.FiltroExtensoesFilechooser;
 
 /**
  * Extensoes suportadas pelo sistema.
@@ -99,7 +98,7 @@ public enum Extensao {
 			if (mapa.get(e.getGrupo()) != null) {
 				mapa.get(e.getGrupo()).addExtensao(e.extensao);
 			} else {
-				FiltroExtensoes fe = new FiltroExtensoesFilechooser(Arrays.asList(new String[] { e.extensao }));
+				FiltroExtensoes fe = new FiltroExtensoes(Arrays.asList(new String[] { e.extensao }));
 				fe.setDescription(e.getDescricao());
 				mapa.put(e.getGrupo(), fe);
 			}
@@ -117,7 +116,7 @@ public enum Extensao {
 				if (mapa.get(e.getGrupo()) != null) {
 					mapa.get(e.getGrupo()).addExtensao(e.extensao);
 				} else {
-					FiltroExtensoes fe = new FiltroExtensoesFilechooser(Arrays.asList(new String[] { e.extensao }));
+					FiltroExtensoes fe = new FiltroExtensoes(Arrays.asList(new String[] { e.extensao }));
 					fe.setDescription(e.getDescricao());
 					mapa.put(e.getGrupo(), fe);
 				}

@@ -22,7 +22,6 @@ import br.com.joaoborges.filemanager.model.Diretorio;
 import br.com.joaoborges.filemanager.model.FiltroExtensoes;
 import br.com.joaoborges.filemanager.operations.common.OperationConstants;
 import br.com.joaoborges.filemanager.operations.interfaces.FileOperation;
-import br.com.joaoborges.filemanager.operations.organization.OrganizationParamsBuilder;
 import lombok.extern.slf4j.Slf4j;
 
 import static br.com.joaoborges.filemanager.operations.common.OperationConstants.EXTRACTION_OPERATION;
@@ -37,8 +36,8 @@ public class Extrator implements FileOperation<ExtractionResult> {
 
     @Override
     public ExtractionResult execute(Map<String, Object> params) throws FileManagerException {
-        Diretorio dirBase = (Diretorio) params.get(OrganizationParamsBuilder.BASE_DIR);
-        Diretorio dirDest = (Diretorio) params.get(OrganizationParamsBuilder.DEST_DIR);
+        Diretorio dirBase = (Diretorio) params.get("BASE_DIR");
+        Diretorio dirDest = (Diretorio) params.get("DEST_DIR");
         FiltroExtensoes filtro = (FiltroExtensoes) params.get(FiltroExtensoes.class.getName());
         filtro.setAcceptDirectories(true);
         ExtractionResult result = new ExtractionResult(dirBase, dirDest);

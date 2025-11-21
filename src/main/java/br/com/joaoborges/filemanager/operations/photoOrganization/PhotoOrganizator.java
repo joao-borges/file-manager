@@ -36,7 +36,6 @@ import br.com.joaoborges.filemanager.exception.FileManagerException;
 import br.com.joaoborges.filemanager.model.Diretorio;
 import br.com.joaoborges.filemanager.model.FiltroExtensoes;
 import br.com.joaoborges.filemanager.operations.interfaces.FileOperation;
-import br.com.joaoborges.filemanager.operations.organization.OrganizationParamsBuilder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -53,8 +52,8 @@ public class PhotoOrganizator implements FileOperation<PhotoOrganizatorResult> {
 
     @Override
     public PhotoOrganizatorResult execute(final Map<String, Object> params) throws FileManagerException {
-        Diretorio dirBase = (Diretorio) params.get(OrganizationParamsBuilder.BASE_DIR);
-        Diretorio dirDest = (Diretorio) params.get(OrganizationParamsBuilder.DEST_DIR);
+        Diretorio dirBase = (Diretorio) params.get("BASE_DIR");
+        Diretorio dirDest = (Diretorio) params.get("DEST_DIR");
         FiltroExtensoes filtro = (FiltroExtensoes) params.getOrDefault(FiltroExtensoes.class.getName(), FiltroExtensoes.allAcceptedFilter());
 
         PhotoOrganizatorResult resultado = new PhotoOrganizatorResult(dirBase, dirDest);

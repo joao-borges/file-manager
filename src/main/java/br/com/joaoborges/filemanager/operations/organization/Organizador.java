@@ -40,8 +40,8 @@ public class Organizador implements FileOperation<OrganizationResult> {
 	private static final long serialVersionUID = 2135777385329465832L;
 
 	public OrganizationResult execute(Map<String, Object> params) throws FileManagerException {
-		Diretorio dirBase = (Diretorio) params.get(OrganizationParamsBuilder.BASE_DIR);
-		Diretorio dirDest = (Diretorio) params.get(OrganizationParamsBuilder.DEST_DIR);
+		Diretorio dirBase = (Diretorio) params.get("BASE_DIR");
+		Diretorio dirDest = (Diretorio) params.get("DEST_DIR");
 		FiltroExtensoes filtro = (FiltroExtensoes) params.get(FiltroExtensoes.class.getName());
 		filtro = filtro != null ? filtro : FiltroExtensoes.allAcceptedFilter();
 		OrganizationResult resultado = new OrganizationResult(dirBase, dirDest);
