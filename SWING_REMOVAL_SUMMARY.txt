@@ -1,0 +1,149 @@
+================================================================================
+  SWING UI REMOVAL - COMPLETE
+================================================================================
+
+✅ ALL SWING CODE REMOVED - WEB-ONLY APPLICATION
+
+================================================================================
+  COMMITS MADE
+================================================================================
+
+Commit 1: a90a550 - "Migrate to React 19 + TypeScript 5.7 web application"
+  - Added complete React + TypeScript frontend
+  - Added REST API controller
+  - Added comprehensive documentation
+  - 31 files changed, 7389 insertions(+)
+
+Commit 2: a35650f - "Remove legacy Swing UI code"
+  - Removed all Swing UI code (25 files)
+  - Fixed HeadlessException
+  - Simplified FileManager.java to web-only mode
+  - 30 files changed, 18 insertions(+), 1548 deletions(-)
+
+================================================================================
+  FILES REMOVED (25 total)
+================================================================================
+
+UI Package (11 files):
+  ✓ ClockManager.java
+  ✓ FiltroExtensoesFilechooser.java
+  ✓ TelaPrincipal.java
+  ✓ listener/AboutListener.java
+  ✓ listener/ExitListener.java
+  ✓ listener/OperationExecuteListener.java
+  ✓ operations/OperationProcess.java
+  ✓ operations/UIOperationResultProcessor.java
+  ✓ utils/FileInfo.java
+  ✓ utils/TelaEsperando.java
+  ✓ utils/WaitingScreenControl.java
+
+ParamsBuilder Classes (5 files):
+  ✓ DuplicateFinderParamsBuilder.java
+  ✓ ExtractionParamsBuilder.java
+  ✓ OrganizationParamsBuilder.java
+  ✓ PhotoOrganizationParamsBuilder.java
+  ✓ RenamingParamsBuilder.java
+  ✓ OperationParamsBuilder.java (interface)
+
+ResultProcessor Classes (5 files):
+  ✓ DuplicateFinderResultProcessor.java
+  ✓ ExtractionResultProcessor.java
+  ✓ OrganizationResultProcessor.java
+  ✓ PhotoOrganizationResultProcessor.java
+  ✓ RenamingResultProcessor.java
+
+Utility Classes (4 files):
+  ✓ DirectoryReader.java
+  ✓ DirectoryReadResult.java
+  ✓ OperationRunner.java
+
+Total: 1,548 lines of Swing code removed
+
+================================================================================
+  FILES MODIFIED (5 files)
+================================================================================
+
+FileManager.java
+  - Removed --swing command line option
+  - Always runs as web application (headless=true)
+  - Added documentation about web access
+  - Simplified from 30 lines to 31 lines
+
+Extrator.java
+  - Removed OrganizationParamsBuilder import
+  - Changed to use string literals for param keys
+
+PhotoOrganizator.java
+  - Removed OrganizationParamsBuilder import
+  - Changed to use string literals for param keys
+
+Organizador.java
+  - Changed to use string literals for param keys
+
+Extensao.java
+  - Removed FiltroExtensoesFilechooser import
+  - Replaced with FiltroExtensoes class
+
+================================================================================
+  COMPILATION RESULTS
+================================================================================
+
+Before (with Swing):
+  - 61 Java source files
+  - All operations + Swing UI
+
+After (web-only):
+  - 36 Java source files (-25 files)
+  - REST API only, no Swing dependencies
+  - Build: SUCCESS
+  - Compilation time: 16 seconds
+
+================================================================================
+  ISSUE FIXED
+================================================================================
+
+Problem:
+  HeadlessException thrown when starting application without --swing flag
+  Application tried to initialize Swing components even in web mode
+
+Solution:
+  - Removed all Swing UI code
+  - FileManager.java now always runs headless
+  - No more Swing dependencies in classpath
+  - Application starts cleanly as web-only
+
+================================================================================
+  HOW TO RUN
+================================================================================
+
+Start Application:
+  ./mvnw spring-boot:run
+
+Access Web UI:
+  http://localhost:8080
+
+No more --swing option - it's purely a web application now!
+
+================================================================================
+  BENEFITS
+================================================================================
+
+✓ No HeadlessException errors
+✓ Cleaner codebase (-1,548 lines)
+✓ Smaller JAR file
+✓ Faster compilation (36 vs 61 files)
+✓ Single deployment target (web)
+✓ Modern stack only (React + Spring Boot)
+✓ No Swing dependencies
+✓ Easier to maintain
+
+================================================================================
+
+  🎉 MIGRATION COMPLETE! 🎉
+
+  File Manager is now a pure web application with React + TypeScript frontend
+  and Spring Boot REST API backend.
+
+  All Swing legacy code has been removed.
+
+================================================================================
