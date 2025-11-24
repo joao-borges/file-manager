@@ -30,7 +30,6 @@ import lombok.extern.slf4j.Slf4j;
  */
 @RestController
 @RequestMapping("/api/filesystem")
-@CrossOrigin(origins = "*")
 @RequiredArgsConstructor
 @Slf4j
 public class FileSystemController {
