@@ -40,6 +40,7 @@ import OrganizeOperation from './components/OrganizeOperation';
 import ExtractOperation from './components/ExtractOperation';
 import PhotoOrganizationOperation from './components/PhotoOrganizationOperation';
 import DuplicateFinderOperation from './components/DuplicateFinderOperation';
+import ErrorBoundary from './components/ErrorBoundary';
 
 // Import types
 import type { Operation, OperationId } from './types';
@@ -178,7 +179,16 @@ const App: FC = () => {
 
         {/* Operation Content */}
         <Container maxWidth="xl">
-          {renderOperation()}
+          <ErrorBoundary
+            onError={(error, errorInfo) => {
+              // Log to console in development
+              console.error('Operation error:', error);
+              console.error('Error info:', errorInfo);
+              // In production, you could send to an error tracking service
+            }}
+          >
+            {renderOperation()}
+          </ErrorBoundary>
         </Container>
       </Box>
     </Box>
