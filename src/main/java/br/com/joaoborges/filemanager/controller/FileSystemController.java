@@ -17,7 +17,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.joaoborges.filemanager.security.PathSecurityService;
 import lombok.Data;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -29,8 +31,11 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequestMapping("/api/filesystem")
 @CrossOrigin(origins = "*")
+@RequiredArgsConstructor
 @Slf4j
 public class FileSystemController {
+
+    private final PathSecurityService pathSecurityService;
 
     /**
      * Get user's home directory
@@ -97,7 +102,8 @@ public class FileSystemController {
                 ? path
                 : System.getProperty("user.home");
 
-            File directory = new File(directoryPath);
+            // Validate and sanitize path to prevent security vulnerabilities
+            File directory = pathSecurityService.validateAndGetFile(directoryPath);
 
             if (!directory.exists()) {
                 return ResponseEntity.badRequest().body(Map.of(
@@ -196,7 +202,8 @@ public class FileSystemController {
     @GetMapping("/validate")
     public ResponseEntity<?> validatePath(@RequestParam String path) {
         try {
-            File file = new File(path);
+            // Validate and sanitize path
+            File file = pathSecurityService.validateAndGetFile(path);
 
             return ResponseEntity.ok(Map.of(
                 "exists", file.exists(),
