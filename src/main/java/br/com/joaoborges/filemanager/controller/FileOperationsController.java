@@ -1,8 +1,5 @@
 package br.com.joaoborges.filemanager.controller;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import jakarta.validation.Valid;
@@ -18,43 +15,40 @@ import br.com.joaoborges.filemanager.dto.ExtractRequest;
 import br.com.joaoborges.filemanager.dto.OrganizeRequest;
 import br.com.joaoborges.filemanager.dto.PhotoOrganizeRequest;
 import br.com.joaoborges.filemanager.dto.RenameRequest;
-import br.com.joaoborges.filemanager.model.Diretorio;
-import br.com.joaoborges.filemanager.model.FiltroExtensoes;
-import br.com.joaoborges.filemanager.operations.duplicateFinder.DuplicateFinder;
 import br.com.joaoborges.filemanager.operations.duplicateFinder.DuplicateFinderResult;
 import br.com.joaoborges.filemanager.operations.extraction.ExtractionResult;
-import br.com.joaoborges.filemanager.operations.extraction.Extrator;
 import br.com.joaoborges.filemanager.operations.organization.OrganizationResult;
-import br.com.joaoborges.filemanager.operations.organization.Organizador;
-import br.com.joaoborges.filemanager.operations.photoOrganization.PhotoOrganizator;
 import br.com.joaoborges.filemanager.operations.photoOrganization.PhotoOrganizatorResult;
-import br.com.joaoborges.filemanager.operations.renaming.Renomeador;
+import br.com.joaoborges.filemanager.service.FileOperationsService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import static br.com.joaoborges.filemanager.operations.renaming.Renomeador.INCLUDE_SUB_DIRECTORIES;
-
+/**
+ * REST Controller for file operations
+ *
+ * This controller provides HTTP endpoints for various file management operations.
+ * It delegates all business logic to FileOperationsService, keeping the controller
+ * layer thin and focused on HTTP concerns (request/response handling).
+ *
+ * All endpoints:
+ * - Accept validated DTOs via @Valid annotation
+ * - Return standardized response format
+ * - Delegate to service layer for execution
+ * - Exception handling done by GlobalExceptionHandler
+ */
 @RestController
 @RequestMapping("/api/operations")
 @RequiredArgsConstructor
 @Slf4j
 public class FileOperationsController {
 
-    private final Renomeador renomeador;
-    private final Organizador organizador;
-    private final Extrator extrator;
-    private final PhotoOrganizator photoOrganizator;
-    private final DuplicateFinder duplicateFinder;
+    private final FileOperationsService fileOperationsService;
 
     @PostMapping("/rename")
     public ResponseEntity<?> renameFiles(@Valid @RequestBody RenameRequest request) {
         log.info("Rename operation requested for directory: {}", request.getSourceDirectory());
 
-        Map<String, Object> params = new HashMap<>();
-        params.put("DIRETORIO", new Diretorio(request.getSourceDirectory()));
-        params.put(INCLUDE_SUB_DIRECTORIES, request.isIncludeSubDirectories());
-
-        var result = renomeador.execute(params);
+        var result = fileOperationsService.executeRename(request);
 
         return ResponseEntity.ok(Map.of(
             "success", true,
@@ -69,12 +63,7 @@ public class FileOperationsController {
         log.info("Organize operation requested: {} -> {}",
             request.getSourceDirectory(), request.getDestinationDirectory());
 
-        Map<String, Object> params = new HashMap<>();
-        params.put("BASE_DIR", new Diretorio(request.getSourceDirectory()));
-        params.put("DEST_DIR", new Diretorio(request.getDestinationDirectory()));
-        params.put(FiltroExtensoes.class.getName(), FiltroExtensoes.allAcceptedFilter());
-
-        OrganizationResult result = organizador.execute(params);
+        OrganizationResult result = fileOperationsService.executeOrganize(request);
 
         return ResponseEntity.ok(Map.of(
             "success", true,
@@ -89,12 +78,7 @@ public class FileOperationsController {
         log.info("Extract operation requested: {} -> {}",
             request.getSourceDirectory(), request.getDestinationDirectory());
 
-        Map<String, Object> params = new HashMap<>();
-        params.put("BASE_DIR", new Diretorio(request.getSourceDirectory()));
-        params.put("DEST_DIR", new Diretorio(request.getDestinationDirectory()));
-        params.put(FiltroExtensoes.class.getName(), FiltroExtensoes.allAcceptedFilter());
-
-        ExtractionResult result = extrator.execute(params);
+        ExtractionResult result = fileOperationsService.executeExtract(request);
 
         return ResponseEntity.ok(Map.of(
             "success", true,
@@ -109,20 +93,7 @@ public class FileOperationsController {
         log.info("Photo organization requested: {} -> {}",
             request.getSourceDirectory(), request.getDestinationDirectory());
 
-        // Create filter for photos and videos (IMAGE and VIDEO types)
-        // Extensions: jpg, jpeg, png, bmp, mov, mp4, avi, wmv, mpeg, mpg
-        List<String> photoAndVideoExtensions = Arrays.asList(
-            "jpg", "jpeg", "png", "bmp",  // Images
-            "mov", "mp4", "avi", "wmv", "mpeg", "mpg"  // Videos
-        );
-        FiltroExtensoes photoFilter = new FiltroExtensoes(photoAndVideoExtensions);
-
-        Map<String, Object> params = new HashMap<>();
-        params.put("BASE_DIR", new Diretorio(request.getSourceDirectory()));
-        params.put("DEST_DIR", new Diretorio(request.getDestinationDirectory()));
-        params.put(FiltroExtensoes.class.getName(), photoFilter);
-
-        PhotoOrganizatorResult result = photoOrganizator.execute(params);
+        PhotoOrganizatorResult result = fileOperationsService.executePhotoOrganization(request);
 
         return ResponseEntity.ok(Map.of(
             "success", true,
@@ -136,10 +107,7 @@ public class FileOperationsController {
     public ResponseEntity<?> findDuplicates(@Valid @RequestBody DuplicateRequest request) {
         log.info("Duplicate finder requested for directory: {}", request.getDirectory());
 
-        Map<String, Object> params = new HashMap<>();
-        params.put(Diretorio.class.getName(), new Diretorio(request.getDirectory()));
-
-        DuplicateFinderResult result = duplicateFinder.execute(params);
+        DuplicateFinderResult result = fileOperationsService.executeFindDuplicates(request);
 
         return ResponseEntity.ok(Map.of(
             "success", true,
