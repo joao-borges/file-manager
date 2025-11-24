@@ -5,13 +5,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import jakarta.validation.Valid;
+
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.joaoborges.filemanager.dto.DuplicateRequest;
+import br.com.joaoborges.filemanager.dto.ExtractRequest;
+import br.com.joaoborges.filemanager.dto.OrganizeRequest;
+import br.com.joaoborges.filemanager.dto.PhotoOrganizeRequest;
+import br.com.joaoborges.filemanager.dto.RenameRequest;
 import br.com.joaoborges.filemanager.exception.FileManagerException;
 import br.com.joaoborges.filemanager.model.Diretorio;
 import br.com.joaoborges.filemanager.model.FiltroExtensoes;
@@ -31,7 +37,6 @@ import static br.com.joaoborges.filemanager.operations.renaming.Renomeador.INCLU
 
 @RestController
 @RequestMapping("/api/operations")
-@CrossOrigin(origins = "*")
 @RequiredArgsConstructor
 @Slf4j
 public class FileOperationsController {
@@ -43,7 +48,7 @@ public class FileOperationsController {
     private final DuplicateFinder duplicateFinder;
 
     @PostMapping("/rename")
-    public ResponseEntity<?> renameFiles(@RequestBody RenameRequest request) {
+    public ResponseEntity<?> renameFiles(@Valid @RequestBody RenameRequest request) {
         try {
             log.info("Rename operation requested for directory: {}", request.getSourceDirectory());
 
@@ -69,7 +74,7 @@ public class FileOperationsController {
     }
 
     @PostMapping("/organize")
-    public ResponseEntity<?> organizeFiles(@RequestBody OrganizeRequest request) {
+    public ResponseEntity<?> organizeFiles(@Valid @RequestBody OrganizeRequest request) {
         try {
             log.info("Organize operation requested: {} -> {}",
                 request.getSourceDirectory(), request.getDestinationDirectory());
@@ -97,7 +102,7 @@ public class FileOperationsController {
     }
 
     @PostMapping("/extract")
-    public ResponseEntity<?> extractFiles(@RequestBody ExtractRequest request) {
+    public ResponseEntity<?> extractFiles(@Valid @RequestBody ExtractRequest request) {
         try {
             log.info("Extract operation requested: {} -> {}",
                 request.getSourceDirectory(), request.getDestinationDirectory());
@@ -125,7 +130,7 @@ public class FileOperationsController {
     }
 
     @PostMapping("/photo-organize")
-    public ResponseEntity<?> organizePhotos(@RequestBody PhotoOrganizeRequest request) {
+    public ResponseEntity<?> organizePhotos(@Valid @RequestBody PhotoOrganizeRequest request) {
         try {
             log.info("Photo organization requested: {} -> {}",
                 request.getSourceDirectory(), request.getDestinationDirectory());
@@ -161,7 +166,7 @@ public class FileOperationsController {
     }
 
     @PostMapping("/find-duplicates")
-    public ResponseEntity<?> findDuplicates(@RequestBody DuplicateRequest request) {
+    public ResponseEntity<?> findDuplicates(@Valid @RequestBody DuplicateRequest request) {
         try {
             log.info("Duplicate finder requested for directory: {}", request.getDirectory());
 
@@ -182,103 +187,6 @@ public class FileOperationsController {
                 "success", false,
                 "message", e.getMessage()
             ));
-        }
-    }
-
-    // Request DTOs
-    public static class RenameRequest {
-        private String sourceDirectory;
-        private boolean includeSubDirectories;
-
-        public String getSourceDirectory() {
-            return sourceDirectory;
-        }
-
-        public void setSourceDirectory(String sourceDirectory) {
-            this.sourceDirectory = sourceDirectory;
-        }
-
-        public boolean isIncludeSubDirectories() {
-            return includeSubDirectories;
-        }
-
-        public void setIncludeSubDirectories(boolean includeSubDirectories) {
-            this.includeSubDirectories = includeSubDirectories;
-        }
-    }
-
-    public static class OrganizeRequest {
-        private String sourceDirectory;
-        private String destinationDirectory;
-
-        public String getSourceDirectory() {
-            return sourceDirectory;
-        }
-
-        public void setSourceDirectory(String sourceDirectory) {
-            this.sourceDirectory = sourceDirectory;
-        }
-
-        public String getDestinationDirectory() {
-            return destinationDirectory;
-        }
-
-        public void setDestinationDirectory(String destinationDirectory) {
-            this.destinationDirectory = destinationDirectory;
-        }
-    }
-
-    public static class ExtractRequest {
-        private String sourceDirectory;
-        private String destinationDirectory;
-
-        public String getSourceDirectory() {
-            return sourceDirectory;
-        }
-
-        public void setSourceDirectory(String sourceDirectory) {
-            this.sourceDirectory = sourceDirectory;
-        }
-
-        public String getDestinationDirectory() {
-            return destinationDirectory;
-        }
-
-        public void setDestinationDirectory(String destinationDirectory) {
-            this.destinationDirectory = destinationDirectory;
-        }
-    }
-
-    public static class PhotoOrganizeRequest {
-        private String sourceDirectory;
-        private String destinationDirectory;
-
-        public String getSourceDirectory() {
-            return sourceDirectory;
-        }
-
-        public void setSourceDirectory(String sourceDirectory) {
-            this.sourceDirectory = sourceDirectory;
-        }
-
-        public String getDestinationDirectory() {
-            return destinationDirectory;
-        }
-
-        public void setDestinationDirectory(String destinationDirectory) {
-            this.destinationDirectory = destinationDirectory;
-        }
-    }
-
-    public static class DuplicateRequest {
-        private String directory;
-
-        public String getDirectory() {
-            return directory;
-        }
-
-        public void setDirectory(String directory) {
-            this.directory = directory;
         }
     }
 }
