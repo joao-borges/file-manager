@@ -26,9 +26,10 @@ import {
 } from '@mui/material';
 import { FolderOpen as FolderOpenIcon } from '@mui/icons-material';
 import { organizeFiles } from '../services/api';
-import type { OrganizeResponse, ApiError } from '../types';
+import type { OrganizeResponse } from '../types';
 import { DirectoryPicker } from './DirectoryPicker';
 import { ProgressDialog } from './ProgressDialog';
+import { useOperation } from '../hooks/useOperation';
 
 /**
  * OrganizeOperation Component
@@ -38,14 +39,15 @@ const OrganizeOperation: FC = () => {
   const [sourceDir, setSourceDir] = useState<string>('');
   const [destDir, setDestDir] = useState<string>('');
 
-  // Operation state
-  const [loading, setLoading] = useState<boolean>(false);
-  const [result, setResult] = useState<OrganizeResponse | null>(null);
-  const [error, setError] = useState<string | null>(null);
-
   // Directory picker state
   const [sourcePickerOpen, setSourcePickerOpen] = useState<boolean>(false);
   const [destPickerOpen, setDestPickerOpen] = useState<boolean>(false);
+
+  // Use the custom operation hook
+  const { execute, loading, result, error, clearError } = useOperation<
+    { sourceDirectory: string; destinationDirectory: string },
+    OrganizeResponse
+  >(organizeFiles);
 
   /**
    * Handle form submission
@@ -53,30 +55,14 @@ const OrganizeOperation: FC = () => {
   const handleExecute = async (): Promise<void> => {
     // Validation
     if (!sourceDir.trim() || !destDir.trim()) {
-      setError('Por favor, informe os diretórios de origem e destino');
       return;
     }
 
-    // Reset state
-    setLoading(true);
-    setError(null);
-    setResult(null);
-
-    try {
-      // Execute organize operation
-      const data = await organizeFiles({
-        sourceDirectory: sourceDir,
-        destinationDirectory: destDir,
-      });
-
-      setResult(data);
-    } catch (err) {
-      // Handle API errors
-      const apiError = err as ApiError;
-      setError(apiError.message || 'Erro ao organizar arquivos');
-    } finally {
-      setLoading(false);
-    }
+    // Execute the operation using the hook
+    await execute({
+      sourceDirectory: sourceDir,
+      destinationDirectory: destDir,
+    });
   };
 
   /**
@@ -162,7 +148,7 @@ const OrganizeOperation: FC = () => {
       </Paper>
 
       {error && (
-        <Alert severity="error" sx={{ mb: 2 }} onClose={() => setError(null)}>
+        <Alert severity="error" sx={{ mb: 2 }} onClose={clearError}>
           {error}
         </Alert>
       )}

@@ -27,9 +27,10 @@ import {
 } from '@mui/material';
 import { FolderOpen as FolderOpenIcon } from '@mui/icons-material';
 import { renameFiles } from '../services/api';
-import type { RenameResponse, ApiError } from '../types';
+import type { RenameResponse } from '../types';
 import { DirectoryPicker } from './DirectoryPicker';
 import { ProgressDialog } from './ProgressDialog';
+import { useOperation } from '../hooks/useOperation';
 
 /**
  * RenameOperation Component
@@ -39,13 +40,14 @@ const RenameOperation: FC = () => {
   const [sourceDir, setSourceDir] = useState<string>('');
   const [includeSubDirs, setIncludeSubDirs] = useState<boolean>(false);
 
-  // Operation state
-  const [loading, setLoading] = useState<boolean>(false);
-  const [result, setResult] = useState<RenameResponse | null>(null);
-  const [error, setError] = useState<string | null>(null);
-
   // Directory picker state
   const [pickerOpen, setPickerOpen] = useState<boolean>(false);
+
+  // Use the custom operation hook
+  const { execute, loading, result, error, clearError } = useOperation<
+    { sourceDirectory: string; includeSubDirectories: boolean },
+    RenameResponse
+  >(renameFiles);
 
   /**
    * Handle form submission
@@ -53,30 +55,14 @@ const RenameOperation: FC = () => {
   const handleExecute = async (): Promise<void> => {
     // Validation
     if (!sourceDir.trim()) {
-      setError('Por favor, informe o diretório de origem');
       return;
     }
 
-    // Reset state
-    setLoading(true);
-    setError(null);
-    setResult(null);
-
-    try {
-      // Execute rename operation
-      const data = await renameFiles({
-        sourceDirectory: sourceDir,
-        includeSubDirectories: includeSubDirs,
-      });
-
-      setResult(data);
-    } catch (err) {
-      // Handle API errors
-      const apiError = err as ApiError;
-      setError(apiError.message || 'Erro ao renomear arquivos');
-    } finally {
-      setLoading(false);
-    }
+    // Execute the operation using the hook
+    await execute({
+      sourceDirectory: sourceDir,
+      includeSubDirectories: includeSubDirs,
+    });
   };
 
   /**
@@ -146,7 +132,7 @@ const RenameOperation: FC = () => {
       </Paper>
 
       {error && (
-        <Alert severity="error" sx={{ mb: 2 }} onClose={() => setError(null)}>
+        <Alert severity="error" sx={{ mb: 2 }} onClose={clearError}>
           {error}
         </Alert>
       )}
