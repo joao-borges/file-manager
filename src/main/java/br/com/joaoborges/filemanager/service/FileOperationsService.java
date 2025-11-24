@@ -4,7 +4,9 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import br.com.joaoborges.filemanager.dto.DuplicateRequest;
@@ -153,5 +155,79 @@ public class FileOperationsService {
         params.put(Diretorio.class.getName(), new Diretorio(request.getDirectory()));
 
         return duplicateFinder.execute(params);
+    }
+
+    // ============================================================================
+    // Async Methods
+    // ============================================================================
+
+    /**
+     * Execute file renaming operation asynchronously
+     *
+     * @param request Rename request parameters
+     * @return CompletableFuture with operation result
+     */
+    @Async("taskExecutor")
+    public CompletableFuture<Object> executeRenameAsync(RenameRequest request) {
+        log.info("Executing async rename operation for directory: {}", request.getSourceDirectory());
+        Object result = executeRename(request);
+        return CompletableFuture.completedFuture(result);
+    }
+
+    /**
+     * Execute file organization operation asynchronously
+     *
+     * @param request Organization request parameters
+     * @return CompletableFuture with operation result
+     */
+    @Async("taskExecutor")
+    public CompletableFuture<OrganizationResult> executeOrganizeAsync(OrganizeRequest request) {
+        log.info("Executing async organize operation: {} -> {}",
+            request.getSourceDirectory(), request.getDestinationDirectory());
+        OrganizationResult result = executeOrganize(request);
+        return CompletableFuture.completedFuture(result);
+    }
+
+    /**
+     * Execute file extraction operation asynchronously
+     *
+     * @param request Extraction request parameters
+     * @return CompletableFuture with operation result
+     */
+    @Async("taskExecutor")
+    public CompletableFuture<ExtractionResult> executeExtractAsync(ExtractRequest request) {
+        log.info("Executing async extract operation: {} -> {}",
+            request.getSourceDirectory(), request.getDestinationDirectory());
+        ExtractionResult result = executeExtract(request);
+        return CompletableFuture.completedFuture(result);
+    }
+
+    /**
+     * Execute photo organization operation asynchronously
+     *
+     * @param request Photo organization request parameters
+     * @return CompletableFuture with operation result
+     */
+    @Async("taskExecutor")
+    public CompletableFuture<PhotoOrganizatorResult> executePhotoOrganizationAsync(
+            PhotoOrganizeRequest request) {
+        log.info("Executing async photo organization: {} -> {}",
+            request.getSourceDirectory(), request.getDestinationDirectory());
+        PhotoOrganizatorResult result = executePhotoOrganization(request);
+        return CompletableFuture.completedFuture(result);
+    }
+
+    /**
+     * Execute duplicate file finder operation asynchronously
+     *
+     * @param request Duplicate finder request parameters
+     * @return CompletableFuture with operation result
+     */
+    @Async("taskExecutor")
+    public CompletableFuture<DuplicateFinderResult> executeFindDuplicatesAsync(
+            DuplicateRequest request) {
+        log.info("Executing async duplicate finder for directory: {}", request.getDirectory());
+        DuplicateFinderResult result = executeFindDuplicates(request);
+        return CompletableFuture.completedFuture(result);
     }
 }
