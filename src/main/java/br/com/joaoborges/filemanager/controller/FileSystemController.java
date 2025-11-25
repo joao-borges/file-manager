@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -92,6 +93,7 @@ public class FileSystemController {
      * List contents of a directory
      */
     @GetMapping("/list")
+    @Cacheable(value = "directoryListings", key = "#path + '-' + #includeFiles", unless = "#result.statusCode.is4xxClientError()")
     public ResponseEntity<?> listDirectory(
             @RequestParam(required = false) String path,
             @RequestParam(defaultValue = "false") boolean includeFiles) {
