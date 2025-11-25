@@ -44,7 +44,7 @@ public class PathSecurityService {
      * Allowed base paths for file operations
      * Can be configured via application.properties
      */
-    @Value("${filemanager.allowed-paths:/tmp,${user.home}}")
+    @Value("${filemanager.allowed-paths:${java.io.tmpdir},${user.home}}")
     private String allowedPathsConfig;
 
     private List<String> allowedBasePaths;
