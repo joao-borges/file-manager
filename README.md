@@ -143,15 +143,21 @@ A modern, full-stack file management application built with Spring Boot and Reac
 
 ## 🔧 Configuration
 
-### Application Properties (`src/main/resources/application.properties`)
+### Application Configuration (`src/main/resources/application.yml`)
 
-```properties
-# Security
-filemanager.allowed-paths=${user.home},${tmp},/data,/uploads
-filemanager.max-file-size=100MB
+```yaml
+# File Manager Configuration
+filemanager:
+  allowed-paths: ${user.home},${java.io.tmpdir},/data,/uploads
+  max-file-size: 100MB
 
-# CORS
-cors.allowed-origins=http://localhost:3000,http://localhost:8080
+# CORS Configuration
+cors:
+  allowed-origins: http://localhost:3000,http://localhost:8080
+
+# Server Configuration
+server:
+  port: 8080
 ```
 
 ### Cache Configuration
