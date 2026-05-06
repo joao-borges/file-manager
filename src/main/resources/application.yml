@@ -20,10 +20,10 @@ logging:
 filemanager:
   # Allowed base paths for file operations (comma-separated)
   # Use ${user.home} for user home directory, ${java.io.tmpdir} for temp directory
-  allowed-paths: ${user.home},${java.io.tmpdir},/data,/uploads
+  allowed-paths: ${user.home},${java.io.tmpdir},/data,/uploads,/mnt
 
   # Maximum file size for operations
-  max-file-size: 100MB
+  max-file-size: 1000MB
 
   # Per-IP request rate limit (requests/sec) on /api/** endpoints
   rate-limit:
