@@ -25,6 +25,10 @@ filemanager:
   # Maximum file size for operations
   max-file-size: 100MB
 
+  # Per-IP request rate limit (requests/sec) on /api/** endpoints
+  rate-limit:
+    requests-per-second: 10.0
+
 # CORS Configuration
 cors:
   # Allowed origins for CORS (comma-separated)

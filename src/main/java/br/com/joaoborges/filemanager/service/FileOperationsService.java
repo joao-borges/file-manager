@@ -66,7 +66,7 @@ public class FileOperationsService {
         log.info("Executing rename operation for directory: {}", request.getSourceDirectory());
 
         Map<String, Object> params = new HashMap<>();
-        params.put("DIRETORIO", new Diretorio(request.getSourceDirectory()));
+        params.put(Diretorio.class.getName(), new Diretorio(request.getSourceDirectory()));
         params.put(INCLUDE_SUB_DIRECTORIES, request.isIncludeSubDirectories());
 
         return renomeador.execute(params);

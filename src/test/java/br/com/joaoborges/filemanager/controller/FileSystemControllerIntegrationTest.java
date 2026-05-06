@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -18,6 +19,7 @@ import static org.hamcrest.Matchers.*;
  */
 @SpringBootTest(classes = br.com.joaoborges.filemanager.app.FileManager.class)
 @AutoConfigureMockMvc
+@TestPropertySource(properties = "filemanager.rate-limit.requests-per-second=10000")
 class FileSystemControllerIntegrationTest {
 
     @Autowired
@@ -68,12 +70,14 @@ class FileSystemControllerIntegrationTest {
 
     @Test
     void testListDirectory_invalidPath() throws Exception {
+        // Path is outside the configured allowed roots, so PathSecurityService
+        // rejects it before the existence check runs.
         mockMvc.perform(get("/api/filesystem/list")
                         .param("path", "/nonexistent/invalid/path"))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.success").value(false))
-                .andExpect(jsonPath("$.message").value(containsString("does not exist")));
+                .andExpect(jsonPath("$.message").value(containsString("not allowed")));
     }
 
     @Test
@@ -92,8 +96,12 @@ class FileSystemControllerIntegrationTest {
 
     @Test
     void testValidatePath_invalidPath() throws Exception {
+        // Use an allowed-but-nonexistent path so PathSecurityService accepts it
+        // and the endpoint can report exists=false instead of failing security.
+        String missing = System.getProperty("user.home") + "/__filemanager_no_such_dir_xyz__";
+
         mockMvc.perform(get("/api/filesystem/validate")
-                        .param("path", "/nonexistent/invalid/path"))
+                        .param("path", missing))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.success").value(true))

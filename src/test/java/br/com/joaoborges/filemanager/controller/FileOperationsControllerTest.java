@@ -10,7 +10,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
+
+import br.com.joaoborges.filemanager.app.FileManager;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -24,6 +28,8 @@ import br.com.joaoborges.filemanager.service.FileOperationsService;
  * Tests HTTP endpoints, request validation, and response formatting
  */
 @WebMvcTest(FileOperationsController.class)
+@ContextConfiguration(classes = FileManager.class)
+@TestPropertySource(properties = "filemanager.rate-limit.requests-per-second=10000")
 class FileOperationsControllerTest {
 
     @Autowired
@@ -43,7 +49,7 @@ class FileOperationsControllerTest {
             .includeSubDirectories(true)
             .build();
 
-        when(fileOperationsService.executeRename(any())).thenReturn(new Object());
+        when(fileOperationsService.executeRename(any())).thenReturn(null);
 
         // When & Then
         mockMvc.perform(post("/api/operations/rename")

@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.io.File;
@@ -29,6 +30,7 @@ import static org.hamcrest.Matchers.*;
  */
 @SpringBootTest(classes = br.com.joaoborges.filemanager.app.FileManager.class)
 @AutoConfigureMockMvc
+@TestPropertySource(properties = "filemanager.rate-limit.requests-per-second=10000")
 class FileOperationsControllerIntegrationTest {
 
     @Autowired
@@ -148,13 +150,15 @@ class FileOperationsControllerIntegrationTest {
         Map<String, Object> request = new HashMap<>();
         request.put("directory", testSourceDir.toString());
 
-        // Should handle missing md5sumfiles.txt gracefully
+        // DuplicateFinder treats a missing md5sumfiles.txt as "no duplicates":
+        // it returns an empty result rather than failing.
         mockMvc.perform(post("/api/operations/find-duplicates")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isBadRequest())
+                .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.success").value(false));
+                .andExpect(jsonPath("$.success").value(true))
+                .andExpect(jsonPath("$.duplicatesRemoved").value(0));
     }
 
     /**

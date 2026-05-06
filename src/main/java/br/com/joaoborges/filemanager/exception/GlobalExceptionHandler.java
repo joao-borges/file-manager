@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -104,6 +105,25 @@ public class GlobalExceptionHandler {
             .body(Map.of(
                 "success", false,
                 "message", ex.getMessage()
+            ));
+    }
+
+    /**
+     * Handles missing or unparseable request bodies (e.g. POST with no body).
+     * Without this, the generic Exception handler below catches it and returns 500.
+     */
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<Map<String, Object>> handleHttpMessageNotReadable(
+            HttpMessageNotReadableException ex) {
+
+        log.warn("Unreadable request body: {}", ex.getMessage());
+
+        return ResponseEntity
+            .badRequest()
+            .body(Map.of(
+                "success", false,
+                "message", "Request body is missing or invalid"
             ));
     }
 

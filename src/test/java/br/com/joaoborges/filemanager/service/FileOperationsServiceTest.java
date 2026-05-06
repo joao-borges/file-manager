@@ -4,6 +4,9 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -11,6 +14,7 @@ import java.util.concurrent.CompletableFuture;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.io.TempDir;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -50,19 +54,28 @@ class FileOperationsServiceTest {
     @InjectMocks
     private FileOperationsService service;
 
+    @TempDir
+    Path tempDir;
+
     private RenameRequest renameRequest;
     private OrganizeRequest organizeRequest;
 
     @BeforeEach
-    void setUp() {
+    void setUp() throws IOException {
+        // The service constructs Diretorio(path) before delegating to the mocked
+        // operation, and Diretorio rejects non-existent paths — so the inputs
+        // must point at real directories.
+        Path source = Files.createDirectories(tempDir.resolve("source"));
+        Path dest = Files.createDirectories(tempDir.resolve("dest"));
+
         renameRequest = RenameRequest.builder()
-            .sourceDirectory("/test/source")
+            .sourceDirectory(source.toString())
             .includeSubDirectories(true)
             .build();
 
         organizeRequest = OrganizeRequest.builder()
-            .sourceDirectory("/test/source")
-            .destinationDirectory("/test/dest")
+            .sourceDirectory(source.toString())
+            .destinationDirectory(dest.toString())
             .build();
     }
 

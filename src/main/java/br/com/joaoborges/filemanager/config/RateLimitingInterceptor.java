@@ -2,6 +2,7 @@ package br.com.joaoborges.filemanager.config;
 
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -40,9 +41,11 @@ public class RateLimitingInterceptor implements HandlerInterceptor {
     private final ConcurrentHashMap<String, RateLimiter> limiters = new ConcurrentHashMap<>();
 
     /**
-     * Default rate limit: 10 requests per second
+     * Per-IP request rate. Configurable via filemanager.rate-limit.requests-per-second
+     * (default 10). Tests bump this to a high value via @TestPropertySource.
      */
-    private static final double REQUESTS_PER_SECOND = 10.0;
+    @Value("${filemanager.rate-limit.requests-per-second:10.0}")
+    private double requestsPerSecond;
 
     /**
      * Intercept requests and apply rate limiting
@@ -61,7 +64,7 @@ public class RateLimitingInterceptor implements HandlerInterceptor {
 
         // Get or create rate limiter for this IP
         RateLimiter rateLimiter = limiters.computeIfAbsent(clientIp,
-            ip -> RateLimiter.create(REQUESTS_PER_SECOND));
+            ip -> RateLimiter.create(requestsPerSecond));
 
         // Try to acquire permit
         if (rateLimiter.tryAcquire()) {
@@ -75,7 +78,7 @@ public class RateLimitingInterceptor implements HandlerInterceptor {
             response.setContentType("application/json");
             response.getWriter().write(String.format(
                 "{\"success\": false, \"message\": \"Rate limit exceeded. Maximum %s requests per second.\"}",
-                (int) REQUESTS_PER_SECOND
+                (int) requestsPerSecond
             ));
 
             return false;

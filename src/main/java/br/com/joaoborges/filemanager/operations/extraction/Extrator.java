@@ -39,7 +39,9 @@ public class Extrator implements FileOperation<ExtractionResult> {
         Diretorio dirBase = (Diretorio) params.get("BASE_DIR");
         Diretorio dirDest = (Diretorio) params.get("DEST_DIR");
         FiltroExtensoes filtro = (FiltroExtensoes) params.get(FiltroExtensoes.class.getName());
-        filtro.setAcceptDirectories(true);
+        // Keep acceptDirectories=false: the recursive walk descends via its own
+        // directory filter, so including dirs in the user filter would make us
+        // try to moveFile() a directory, which throws.
         ExtractionResult result = new ExtractionResult(dirBase, dirDest);
 
         // varre recursivamente o diretorio base procurando arquivos nas extensoes informadas

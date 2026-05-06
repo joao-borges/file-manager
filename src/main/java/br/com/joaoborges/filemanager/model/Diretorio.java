@@ -38,7 +38,7 @@ public class Diretorio {
         this.path = path;
         this.dir = new File(path);
         if (!dir.exists() || !dir.isDirectory()) {
-            throw new UnsupportedOperationException("Nao é permitido instanciar um diretório em um caminho inválido.");
+            throw new IllegalArgumentException("Nao é permitido instanciar um diretório em um caminho inválido: " + path);
         }
         this.allContent = new TreeSet<>(ORDEM_NOME);
         this.allContent.addAll(Arrays.asList(dir.listFiles()));
