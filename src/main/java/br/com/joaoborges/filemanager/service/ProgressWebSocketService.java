@@ -1,5 +1,6 @@
 package br.com.joaoborges.filemanager.service;
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +23,7 @@ import java.util.Map;
 @Service
 @RequiredArgsConstructor
 @Slf4j
+@ConditionalOnWebApplication
 public class ProgressWebSocketService {
 
     private final SimpMessagingTemplate messagingTemplate;

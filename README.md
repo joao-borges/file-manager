@@ -136,6 +136,17 @@ A modern, full-stack file management application built with Spring Boot and Reac
 - API Endpoints: http://localhost:8080/api/*
 - WebSocket: ws://localhost:8080/ws
 
+**Run a single operation from the command line (oneshot mode):**
+```bash
+java -jar target/file-manager-*.jar \
+  --oneshot='{"operation":"organize","params":{"sourceDirectory":"/in","destinationDirectory":"/out"}}'
+
+# Or load the JSON from a file:
+java -jar target/file-manager-*.jar --oneshot-file=/path/to/payload.json
+```
+The embedded web server is suppressed in oneshot mode; the JVM exits after the
+operation. See [`docs/oneshot-cli.md`](docs/oneshot-cli.md) for the full JSON schema.
+
 **Run tests:**
 ```bash
 ./mvnw test

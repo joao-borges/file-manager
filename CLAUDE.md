@@ -4,135 +4,115 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is a Spring Boot-based Java Swing desktop application for file management operations. The application provides a GUI for performing various file operations like renaming, organizing, extracting, photo organization by date, and duplicate file detection.
+A full-stack file management application with a Spring Boot REST backend and a React + TypeScript frontend. The backend exposes file operations (rename, organize, extract, photo organization, duplicate detection) over HTTP; the frontend at `src/main/frontend` calls those endpoints and renders results.
+
+The application also supports a **oneshot CLI mode** for scripting: a single invocation accepts a JSON payload, runs one operation, prints a JSON summary, and exits. See `docs/oneshot-cli.md` for the JSON schema.
 
 ## Build and Run
 
-**Build the project:**
+**Build the project (compiles Java + builds frontend):**
 ```bash
 ./mvnw clean package
 ```
 
-**Run the application:**
+**Run the application (web mode):**
 ```bash
 ./mvnw spring-boot:run
 ```
+Frontend at http://localhost:8080, REST API at http://localhost:8080/api/*.
+
+**Run the application (oneshot CLI mode):**
+```bash
+java -jar target/file-manager-*.jar --oneshot='{"operation":"organize","params":{"sourceDirectory":"/in","destinationDirectory":"/out"}}'
+java -jar target/file-manager-*.jar --oneshot-file=/path/to/payload.json
+```
+In oneshot mode the embedded web server is suppressed; the JVM exits with code 0 on success, 1 on error.
 
 **Run tests:**
 ```bash
 ./mvnw test
 ```
 
+**Frontend dev server (HMR):**
+```bash
+cd src/main/frontend && npm run dev
+```
+
 ## Technology Stack
 
-- Java 21
-- Spring Boot 3.2.3
-- Java Swing (UI framework)
-- Maven (build tool)
-- Lombok (code generation)
-- Apache Commons (IO, Text)
-- Metadata extractors for images/videos (metadata-extractor, jaudiotagger)
+- Java 21, Spring Boot 3.5.8 (Web, Validation, WebSocket, Cache)
+- React 18 + TypeScript + Vite 6 (Material-UI, SockJS/STOMP)
+- Maven (with `frontend-maven-plugin` to build the React app)
+- Lombok, Jackson, Apache Commons (IO, Text), Guava (rate limiting), Caffeine (cache)
+- metadata-extractor / commons-imaging / jaudiotagger for media metadata
 
 ## Architecture
 
-### Core Operation Pattern
+### Layered backend
 
-The application follows a consistent operation pattern across all file operations:
+```
+Controller (controller/)         — HTTP boundary, @Valid DTOs, thin
+       ↓
+Service (service/)               — FileOperationsService delegates to operations
+       ↓
+Operation (operations/<name>/)   — Renomeador, Organizador, Extrator,
+                                   PhotoOrganizator, DuplicateFinder
+```
 
-1. **FileOperation Interface**: All operations implement `FileOperation<R>` where R extends `OperationResult`
-   - Located in `operations/interfaces/`
-   - Each operation must implement `execute(Map<String, Object> params)`
+Each operation implements `FileOperation<R extends OperationResult>` (`operations/interfaces/`) with a single `execute(Map<String, Object> params)` method. The service layer translates DTOs into the parameter `Map` each operation expects.
 
-2. **Operation Execution Flow**:
-   - User selects operation from `TelaPrincipal` (main UI)
-   - `OperationExecuteListener` intercepts the action
-   - `OperationRunner` orchestrates the execution:
-     - Retrieves the appropriate `OperationParamsBuilder` bean by operation ID
-     - Builds parameters via UI dialogs
-     - Executes the operation
-     - Returns the result
+### Entry points
 
-3. **Operation Components** (per operation):
-   - Operation class (e.g., `Renomeador`, `Organizador`) - implements `FileOperation<R>`
-   - ParamsBuilder (e.g., `RenamingParamsBuilder`) - builds operation parameters via UI
-   - Result class (e.g., `RenamingResult`) - encapsulates operation results
-   - ResultProcessor (e.g., `RenamingResultProcessor`) - processes and displays results
+- `app/FileManager.java` — Spring Boot main class. Detects oneshot args (`--oneshot=` / `--oneshot-file=`) early and switches `WebApplicationType` to `NONE` before the context starts, so no port is bound.
+- `cli/OneshotRunner.java` — `ApplicationRunner` that runs only when oneshot args are present. Parses JSON, dispatches to `FileOperationsService`, prints a JSON summary to stdout, and exits via `SpringApplication.exit`.
+- `controller/FileOperationsController` — REST endpoints (`POST /api/operations/{rename|organize|extract|photo-organize|find-duplicates}`).
+- `controller/FileSystemController` — directory listing endpoints (`GET /api/filesystem/*`).
 
-### Main Operations
+CLI and REST share the same DTOs (`dto/*Request.java`) and the same `FileOperationsService`, so validation and behavior stay in sync between the two.
 
-**Renaming (`operations/renaming/`)**
-- Operation ID: `RENAME_OPERATION`
-- Renames files based on patterns and exclusion rules
-- Uses `ExclusionManagerService` to load exclusion patterns from `exclusions.xml`
-- Supports post-processors (e.g., `AudioPostProcessor` for audio files)
+### Operation summary
 
-**Organization (`operations/organization/`)**
-- Operation ID: `ORGANIZATION_OPERATION`
-- Organizes files by extension into category folders
-- Uses extension filters from properties files
+| Operation        | ID constant                      | DTO                    | Result                      |
+| ---------------- | -------------------------------- | ---------------------- | --------------------------- |
+| Rename           | `RENAME_OPERATION`               | `RenameRequest`        | `Renomeador.RenamingResult` |
+| Organize         | `ORGANIZATION_OPERATION`         | `OrganizeRequest`      | `OrganizationResult`        |
+| Extract          | `EXTRACTION_OPERATION`           | `ExtractRequest`       | `ExtractionResult`          |
+| Photo Organize   | `PHOTO_ORGANIZATION_OPERATION`   | `PhotoOrganizeRequest` | `PhotoOrganizatorResult`    |
+| Find Duplicates  | `DUPLICATE_FINDER_OPERATION`     | `DuplicateRequest`     | `DuplicateFinderResult`     |
 
-**Extraction (`operations/extraction/`)**
-- Operation ID: `EXTRACTION_OPERATION`
-- Recursively extracts files matching extension filters from nested directories
+Constants live in `operations/common/OperationConstants`. Each operation is a Spring bean named after its ID constant.
 
-**Photo Organization (`operations/photoOrganization/`)**
-- Operation ID: `PHOTO_ORGANIZATION_OPERATION`
-- Organizes photos/videos by date extracted from EXIF metadata
-- Uses `metadata-extractor` library to read EXIF data from images and videos
+### Cross-cutting
 
-**Duplicate Finder (`operations/duplicateFinder/`)**
-- Operation ID: `DUPLICATE_FINDER_OPERATION`
-- Finds and removes duplicate files based on MD5 hashes
-- Reads from `md5sumfiles.txt` in the target directory
+- `config/AsyncConfig` — `taskExecutor` thread pool for `@Async` service methods.
+- `config/CacheConfig` — Caffeine caches for directory listings and path validations.
+- `config/WebMvcConfig` + `config/RateLimitingInterceptor` — Guava-based per-IP rate limiting on `/api/**` (web mode only).
+- `config/WebSocketConfig` — STOMP/SockJS at `/ws` for progress events (web mode only; gated by `@ConditionalOnWebApplication`).
+- `config/WebSecurityConfig` — CORS (web mode only).
+- `security/PathSecurityService` — path traversal guard, allowed-base-path enforcement.
+- `exception/GlobalExceptionHandler` — `@RestControllerAdvice` mapping exceptions to JSON responses (HTTP only; the CLI handles errors itself).
 
-### Spring Configuration
+### Configuration files
 
-- Main class: `FileManager.java`
-- Component scan: `br.com.joaoborges.filemanager`
-- Headless mode: **disabled** (GUI application)
-- `SpringUtils` provides static access to ApplicationContext for bean lookup
-
-### UI Structure
-
-- `TelaPrincipal`: Main window with menu and file table
-- `ui/listener/`: Action listeners for menu operations
-- `ui/operations/`: UI-specific operation handling
-- `ui/utils/`: UI utilities (waiting screen, file info display)
-
-### Model and Utilities
-
-- `model/Diretorio`: Represents a directory with file listing capabilities
-- `model/FiltroExtensoes`: File extension filter system
-- `model/util/FileUtils`: File operation utilities
-- `type/`: Enums for file types, extensions, and constants
-
-### Configuration Files
-
-- `src/main/resources/br/com/joaoborges/filemanager/resources/`:
-  - `Extensoes.properties`: File extension definitions
-  - `GruposExtensoes.properties`: Extension groups (audio, video, images, etc.)
-  - `RegexesToFilter.properties`: Regex patterns for filtering
-  - `StringsToFilter.properties`: String patterns for filtering
-- `src/main/resources/exclusions.xml`: Exclusion rules for renaming operations
+- `src/main/resources/application.yml` — server port, allowed paths, CORS origins, log levels.
+- `src/main/resources/exclusions.xml` — exclusion rules for the rename operation.
+- `src/main/resources/br/com/joaoborges/filemanager/resources/` — `Extensoes.properties`, `GruposExtensoes.properties`, `RegexesToFilter.properties`, `StringsToFilter.properties`.
 
 ## Common Patterns
 
-**Adding a New Operation:**
-1. Create operation package under `operations/`
-2. Implement `FileOperation<YourResult>`
-3. Create `YourResult` extending `OperationResult`
-4. Create `YourParamsBuilder` implementing `OperationParamsBuilder`
-5. Create `YourResultProcessor` for result handling
-6. Add operation constant to `OperationConstants`
-7. Register in `TelaPrincipal` menu
+**Adding a new operation:**
+1. Implement `FileOperation<YourResult>` under `operations/<name>/`, register as a Spring bean with the operation's ID constant.
+2. Create a `YourResult implements OperationResult`.
+3. Add a `YourRequest` DTO under `dto/` with Jakarta Validation annotations.
+4. Add an `executeYourOp(YourRequest)` method to `FileOperationsService` that maps the DTO into the operation's `Map<String, Object>` params.
+5. Wire it into `FileOperationsController` (REST endpoint) and into `OneshotRunner.dispatch` (CLI). Document the JSON shape in `docs/oneshot-cli.md`.
 
-**Spring Bean Naming:**
-- Operations are registered as Spring beans with their operation ID as the bean name
-- ParamsBuilders use format: `OperationParamsBuilder.BEAN_NAME_FORMAT + operationID`
+**Spring bean naming for operations:**
+- Operation beans use their ID constant (e.g. `@Service(value = OperationConstants.RENAME_OPERATION)`).
 
 ## Important Notes
 
-- The application uses Portuguese for UI labels and some variable names
-- Operations are executed synchronously with a waiting screen displayed
-- File operations typically show preview in the main table before execution
-- The application stores operation state in `Map<String, Object>` passed between components
+- The codebase uses Portuguese for some class names (`Renomeador`, `Diretorio`, `Organizador`, `FiltroExtensoes`) and many UI labels.
+- Operations are synchronous; the async wrappers in `FileOperationsService` exist for the WebSocket progress flow.
+- Operation parameters are passed as `Map<String, Object>` between the service and the operation classes — keys are documented as constants on the operation classes.
+- In oneshot mode no HTTP/WebSocket beans are loaded; only the operation pipeline runs.
