@@ -55,8 +55,8 @@ Controller (controller/)         — HTTP boundary, @Valid DTOs, thin
        ↓
 Service (service/)               — FileOperationsService delegates to operations
        ↓
-Operation (operations/<name>/)   — Renomeador, Organizador, Extrator,
-                                   PhotoOrganizator, DuplicateFinder
+Operation (operations/<name>/)   — Renamer, Organizer, Extractor,
+                                   PhotoOrganizer, DuplicateFinder
 ```
 
 Each operation implements `FileOperation<R extends OperationResult>` (`operations/interfaces/`) with a single `execute(Map<String, Object> params)` method. The service layer translates DTOs into the parameter `Map` each operation expects.
@@ -74,10 +74,10 @@ CLI and REST share the same DTOs (`dto/*Request.java`) and the same `FileOperati
 
 | Operation        | ID constant                      | DTO                    | Result                      |
 | ---------------- | -------------------------------- | ---------------------- | --------------------------- |
-| Rename           | `RENAME_OPERATION`               | `RenameRequest`        | `Renomeador.RenamingResult` |
+| Rename           | `RENAME_OPERATION`               | `RenameRequest`        | `Renamer.RenamingResult` |
 | Organize         | `ORGANIZATION_OPERATION`         | `OrganizeRequest`      | `OrganizationResult`        |
 | Extract          | `EXTRACTION_OPERATION`           | `ExtractRequest`       | `ExtractionResult`          |
-| Photo Organize   | `PHOTO_ORGANIZATION_OPERATION`   | `PhotoOrganizeRequest` | `PhotoOrganizatorResult`    |
+| Photo Organize   | `PHOTO_ORGANIZATION_OPERATION`   | `PhotoOrganizeRequest` | `PhotoOrganizerResult`    |
 | Find Duplicates  | `DUPLICATE_FINDER_OPERATION`     | `DuplicateRequest`     | `DuplicateFinderResult`     |
 
 Constants live in `operations/common/OperationConstants`. Each operation is a Spring bean named after its ID constant.
@@ -96,7 +96,7 @@ Constants live in `operations/common/OperationConstants`. Each operation is a Sp
 
 - `src/main/resources/application.yml` — server port, allowed paths, CORS origins, log levels.
 - `src/main/resources/exclusions.xml` — exclusion rules for the rename operation.
-- `src/main/resources/br/com/joaoborges/filemanager/resources/` — `Extensoes.properties`, `GruposExtensoes.properties`, `RegexesToFilter.properties`, `StringsToFilter.properties`.
+- `src/main/resources/ca/joaoborges/filemanager/resources/` — `Extensions.properties`, `ExtensionGroups.properties`, `RegexesToFilter.properties`, `StringsToFilter.properties`.
 
 ## Common Patterns
 
@@ -110,9 +110,23 @@ Constants live in `operations/common/OperationConstants`. Each operation is a Sp
 **Spring bean naming for operations:**
 - Operation beans use their ID constant (e.g. `@Service(value = OperationConstants.RENAME_OPERATION)`).
 
+## Code Style
+
+The entire codebase (Java and the TypeScript in `src/main/frontend`) is English-only — identifiers, comments, log/UI strings, resource bundles. Keep it that way. One deliberate exception: `PhotoOrganizer` writes Portuguese month folder names (`Locale.of("pt", "BR")`, fallback folder `outros`) because users' existing photo trees were organized with those names — do NOT translate them. Formatting and conventions follow the operator's standard Java style:
+
+- **Braces always, multi-line — never a one-liner.** Every `if`/`else`/`for`/`while`/`try`/`catch`/method/lambda block is opening brace, newline, body line(s), newline, closing brace. No braceless control flow and no single-line braced bodies (`if (x) { y; }` is disallowed). The one exception is a genuinely empty body, which stays `{}`. `} else {` / `} catch {` stay cuddled. Applies to the frontend TS/TSX too.
+- **Explicit imports only — no star imports.** Import exactly the classes used; prefer import + simple name over inline fully-qualified names (except when two classes share a simple name, e.g. `com.drew.metadata.Directory` vs the model `Directory` in `PhotoOrganizer`).
+- **Blank lines for structure.** One blank line between members; one right after a top-level class's opening brace and one right before its closing brace.
+- **`final` by default.** Locals and parameters are `final` unless reassigned — including catch parameters and enhanced-for variables, but not classic mutated for-counters. Method declarations are never `final`.
+- **Indentation is 4 spaces, never tabs.**
+- **Descriptive catch names.** Name the caught exception for what the handler does — `ignored`, `logged`, `wrapped`, `rethrown` — never a bare `e`/`ex`.
+- **Prefer `record`** for data-only types where safe (not Jackson-serialized API results or `Serializable` classes that must keep their shape).
+- **No dead declarations.** Remove unused imports; don't declare `throws X` a body can't throw.
+- **No confirmation comments** — don't add a comment whose only purpose is to note a rule was followed.
+- In the frontend: `const` by default (only `let` for genuinely reassigned bindings), function components + arrow callbacks.
+
 ## Important Notes
 
-- The codebase uses Portuguese for some class names (`Renomeador`, `Diretorio`, `Organizador`, `FiltroExtensoes`) and many UI labels.
 - Operations are synchronous; the async wrappers in `FileOperationsService` exist for the WebSocket progress flow.
 - Operation parameters are passed as `Map<String, Object>` between the service and the operation classes — keys are documented as constants on the operation classes.
 - In oneshot mode no HTTP/WebSocket beans are loaded; only the operation pipeline runs.

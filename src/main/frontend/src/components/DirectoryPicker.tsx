@@ -199,7 +199,9 @@ export const DirectoryPicker: React.FC<DirectoryPickerProps> = ({
    * Build breadcrumb path components
    */
   const buildBreadcrumbs = (): React.ReactElement[] => {
-    if (!currentPath) return [];
+    if (!currentPath) {
+      return [];
+    }
 
     const parts = currentPath.split(/[/\\]/).filter(Boolean);
     const breadcrumbs: React.ReactElement[] = [];
@@ -367,7 +369,11 @@ export const DirectoryPicker: React.FC<DirectoryPickerProps> = ({
               label="Or enter path manually"
               value={manualPath}
               onChange={handleManualPathChange}
-              onKeyPress={(e) => e.key === 'Enter' && handleManualPathSubmit()}
+              onKeyPress={(e) => {
+                if (e.key === 'Enter') {
+                  handleManualPathSubmit();
+                }
+              }}
               error={!pathValid}
               helperText={
                 !pathValid

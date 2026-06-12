@@ -45,8 +45,8 @@ A modern, full-stack file management application built with Spring Boot and Reac
 ┌─────────────────────────────────────────────┐
 │         Operations Layer                     │
 │  ┌──────────────────────────────────────┐   │
-│  │ Renomeador, Organizador, Extrator    │   │
-│  │ PhotoOrganizator, DuplicateFinder    │   │
+│  │ Renamer, Organizer, Extractor    │   │
+│  │ PhotoOrganizer, DuplicateFinder    │   │
 │  └──────────────────────────────────────┘   │
 └─────────────────────────────────────────────┘
 ```
@@ -280,7 +280,7 @@ npm run dev
 
 ```
 file-manager/
-├── src/main/java/br/com/joaoborges/filemanager/
+├── src/main/java/ca/joaoborges/filemanager/
 │   ├── config/              # Configuration classes
 │   │   ├── AsyncConfig.java
 │   │   ├── CacheConfig.java

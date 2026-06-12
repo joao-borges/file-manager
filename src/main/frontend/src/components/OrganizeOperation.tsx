@@ -77,21 +77,21 @@ const OrganizeOperation: FC = () => {
   return (
     <Box>
       <Typography variant="h4" gutterBottom>
-        Organizar Arquivos
+        Organize Files
       </Typography>
 
       <Paper sx={{ p: 3, mb: 3 }}>
         <TextField
           fullWidth
-          label="Diretório de Origem"
+          label="Source Directory"
           value={sourceDir}
           onChange={(e) => setSourceDir(e.target.value)}
           onKeyPress={handleKeyPress}
           margin="normal"
-          placeholder="/caminho/para/origem"
+          placeholder="/path/to/source"
           disabled={loading}
           required
-          helperText="Diretório contendo os arquivos para organizar"
+          helperText="Directory containing the files to organize"
           InputProps={{
             endAdornment: (
               <InputAdornment position="end">
@@ -110,15 +110,15 @@ const OrganizeOperation: FC = () => {
 
         <TextField
           fullWidth
-          label="Diretório de Destino"
+          label="Destination Directory"
           value={destDir}
           onChange={(e) => setDestDir(e.target.value)}
           onKeyPress={handleKeyPress}
           margin="normal"
-          placeholder="/caminho/para/destino"
+          placeholder="/path/to/destination"
           disabled={loading}
           required
-          helperText="Diretório onde os arquivos serão organizados por categoria"
+          helperText="Directory where files will be organized by category"
           InputProps={{
             endAdornment: (
               <InputAdornment position="end">
@@ -142,7 +142,7 @@ const OrganizeOperation: FC = () => {
             disabled={loading}
             startIcon={loading ? <CircularProgress size={20} /> : undefined}
           >
-            {loading ? 'Processando...' : 'Executar'}
+            {loading ? 'Processing...' : 'Execute'}
           </Button>
         </Box>
       </Paper>
@@ -156,10 +156,10 @@ const OrganizeOperation: FC = () => {
       {result && (
         <Paper sx={{ p: 3 }}>
           <Typography variant="h6" gutterBottom>
-            Resultado
+            Result
           </Typography>
           <Alert severity="success" sx={{ mb: 2 }}>
-            Operação concluída com sucesso! {result.filesOrganized || 0} arquivo(s) organizado(s).
+            Operation completed successfully! {result.filesOrganized || 0} file(s) organized.
           </Alert>
 
           {result.message && (

@@ -7,14 +7,13 @@ server:
 
 # Spring Configuration
 spring:
-  # Enable web UI by default (use --swing argument to run Swing UI)
   main:
     web-application-type: servlet
 
 # Logging Configuration
 logging:
   level:
-    br.com.joaoborges.filemanager: INFO
+    ca.joaoborges.filemanager: INFO
 
 # File Manager Configuration
 filemanager:

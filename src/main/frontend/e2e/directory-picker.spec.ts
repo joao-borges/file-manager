@@ -118,7 +118,7 @@ test.describe('Directory Picker', () => {
         });
 
         // The path should be filled in the source directory input
-        const sourceDirInput = page.getByLabel(/Diretório/i).first();
+        const sourceDirInput = page.getByLabel(/Directory/i).first();
         const value = await sourceDirInput.inputValue();
         expect(value.length).toBeGreaterThan(0);
       }

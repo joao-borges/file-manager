@@ -45,7 +45,7 @@ const PhotoOrganizationOperation: FC = () => {
   const handleExecute = async (): Promise<void> => {
     // Validation
     if (!sourceDir.trim() || !destDir.trim()) {
-      setError('Por favor, informe os diretórios de origem e destino');
+      setError('Please provide the source and destination directories');
       return;
     }
 
@@ -65,7 +65,7 @@ const PhotoOrganizationOperation: FC = () => {
     } catch (err) {
       // Handle API errors
       const apiError = err as ApiError;
-      setError(apiError.message || 'Erro ao organizar fotos');
+      setError(apiError.message || 'Error organizing photos');
     } finally {
       setLoading(false);
     }
@@ -83,38 +83,38 @@ const PhotoOrganizationOperation: FC = () => {
   return (
     <Box>
       <Typography variant="h4" gutterBottom>
-        Organizar Imagens por Data
+        Organize Photos by Date
       </Typography>
 
       <Typography variant="body2" color="text.secondary" gutterBottom>
-        Organiza fotos e vídeos em pastas baseadas na data EXIF
+        Organizes photos and videos into folders based on EXIF date
       </Typography>
 
       <Paper sx={{ p: 3, mb: 3, mt: 2 }}>
         <TextField
           fullWidth
-          label="Diretório de Origem"
+          label="Source Directory"
           value={sourceDir}
           onChange={(e) => setSourceDir(e.target.value)}
           onKeyPress={handleKeyPress}
           margin="normal"
-          placeholder="/caminho/para/fotos"
+          placeholder="/path/to/photos"
           disabled={loading}
           required
-          helperText="Diretório contendo fotos e vídeos com metadados EXIF"
+          helperText="Directory containing photos and videos with EXIF metadata"
         />
 
         <TextField
           fullWidth
-          label="Diretório de Destino"
+          label="Destination Directory"
           value={destDir}
           onChange={(e) => setDestDir(e.target.value)}
           onKeyPress={handleKeyPress}
           margin="normal"
-          placeholder="/caminho/para/destino"
+          placeholder="/path/to/destination"
           disabled={loading}
           required
-          helperText="Diretório onde as fotos serão organizadas por data"
+          helperText="Directory where photos will be organized by date"
         />
 
         <Box sx={{ mt: 2 }}>
@@ -124,7 +124,7 @@ const PhotoOrganizationOperation: FC = () => {
             disabled={loading}
             startIcon={loading ? <CircularProgress size={20} /> : undefined}
           >
-            {loading ? 'Processando...' : 'Executar'}
+            {loading ? 'Processing...' : 'Execute'}
           </Button>
         </Box>
       </Paper>
@@ -138,10 +138,10 @@ const PhotoOrganizationOperation: FC = () => {
       {result && (
         <Paper sx={{ p: 3 }}>
           <Typography variant="h6" gutterBottom>
-            Resultado
+            Result
           </Typography>
           <Alert severity="success" sx={{ mb: 2 }}>
-            Operação concluída com sucesso! {result.photosOrganized || 0} foto(s) organizada(s).
+            Operation completed successfully! {result.photosOrganized || 0} photo(s) organized.
           </Alert>
 
           {result.message && (

@@ -14,9 +14,9 @@ test.describe('Rename Operation', () => {
 
   test('should display rename operation form', async ({ page }) => {
     // Look for the form elements
-    const sourceDirInput = page.getByLabel(/Diretório de Origem/i);
-    const includeSubdirsCheckbox = page.getByLabel(/Incluir subdiretórios/i);
-    const executeButton = page.getByRole('button', { name: /Executar/i });
+    const sourceDirInput = page.getByLabel(/Source Directory/i);
+    const includeSubdirsCheckbox = page.getByLabel(/Include subdirectories/i);
+    const executeButton = page.getByRole('button', { name: /Execute/i });
 
     await expect(sourceDirInput).toBeVisible();
     await expect(includeSubdirsCheckbox).toBeVisible();
@@ -25,7 +25,7 @@ test.describe('Rename Operation', () => {
 
   test('should open directory picker when browse button is clicked', async ({ page }) => {
     // Click the folder icon to open directory picker
-    const browseBut = page.locator('button[title="Browse..."]').first();
+    const browseButton = page.locator('button[title="Browse..."]').first();
 
     if (await browseButton.isVisible()) {
       await browseButton.click();
@@ -39,13 +39,13 @@ test.describe('Rename Operation', () => {
 
   test('should validate required fields', async ({ page }) => {
     // Try to execute without filling in the source directory
-    const executeButton = page.getByRole('button', { name: /Executar/i });
+    const executeButton = page.getByRole('button', { name: /Execute/i });
 
     if (await executeButton.isVisible()) {
       await executeButton.click();
 
       // Should show an error message
-      await expect(page.getByText(/Por favor, informe o diretório de origem/i)).toBeVisible({
+      await expect(page.getByText(/cannot be empty/i)).toBeVisible({
         timeout: 3000,
       });
     }
@@ -53,13 +53,13 @@ test.describe('Rename Operation', () => {
 
   test('should show progress dialog during operation', async ({ page }) => {
     // Fill in a valid directory path
-    const sourceDirInput = page.getByLabel(/Diretório de Origem/i);
+    const sourceDirInput = page.getByLabel(/Source Directory/i);
 
     if (await sourceDirInput.isVisible()) {
       await sourceDirInput.fill('/tmp/test');
 
       // Execute the operation
-      const executeButton = page.getByRole('button', { name: /Executar/i });
+      const executeButton = page.getByRole('button', { name: /Execute/i });
       await executeButton.click();
 
       // Progress dialog should appear

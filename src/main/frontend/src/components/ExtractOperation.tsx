@@ -44,7 +44,7 @@ const ExtractOperation: FC = () => {
   const handleExecute = async (): Promise<void> => {
     // Validation
     if (!sourceDir.trim() || !destDir.trim()) {
-      setError('Por favor, informe os diretórios de origem e destino');
+      setError('Please provide the source and destination directories');
       return;
     }
 
@@ -64,7 +64,7 @@ const ExtractOperation: FC = () => {
     } catch (err) {
       // Handle API errors
       const apiError = err as ApiError;
-      setError(apiError.message || 'Erro ao extrair arquivos');
+      setError(apiError.message || 'Error extracting files');
     } finally {
       setLoading(false);
     }
@@ -82,38 +82,38 @@ const ExtractOperation: FC = () => {
   return (
     <Box>
       <Typography variant="h4" gutterBottom>
-        Extrair Arquivos
+        Extract Files
       </Typography>
 
       <Typography variant="body2" color="text.secondary" gutterBottom>
-        Extrai recursivamente arquivos de subdiretórios para o diretório de destino
+        Recursively extracts files from subdirectories into the destination directory
       </Typography>
 
       <Paper sx={{ p: 3, mb: 3, mt: 2 }}>
         <TextField
           fullWidth
-          label="Diretório de Origem"
+          label="Source Directory"
           value={sourceDir}
           onChange={(e) => setSourceDir(e.target.value)}
           onKeyPress={handleKeyPress}
           margin="normal"
-          placeholder="/caminho/para/origem"
+          placeholder="/path/to/source"
           disabled={loading}
           required
-          helperText="Diretório raiz contendo subdiretórios com arquivos"
+          helperText="Root directory containing subdirectories with files"
         />
 
         <TextField
           fullWidth
-          label="Diretório de Destino"
+          label="Destination Directory"
           value={destDir}
           onChange={(e) => setDestDir(e.target.value)}
           onKeyPress={handleKeyPress}
           margin="normal"
-          placeholder="/caminho/para/destino"
+          placeholder="/path/to/destination"
           disabled={loading}
           required
-          helperText="Diretório onde os arquivos serão extraídos (estrutura plana)"
+          helperText="Directory where files will be extracted (flat structure)"
         />
 
         <Box sx={{ mt: 2 }}>
@@ -123,7 +123,7 @@ const ExtractOperation: FC = () => {
             disabled={loading}
             startIcon={loading ? <CircularProgress size={20} /> : undefined}
           >
-            {loading ? 'Processando...' : 'Executar'}
+            {loading ? 'Processing...' : 'Execute'}
           </Button>
         </Box>
       </Paper>
@@ -137,10 +137,10 @@ const ExtractOperation: FC = () => {
       {result && (
         <Paper sx={{ p: 3 }}>
           <Typography variant="h6" gutterBottom>
-            Resultado
+            Result
           </Typography>
           <Alert severity="success" sx={{ mb: 2 }}>
-            Operação concluída com sucesso! {result.filesExtracted || 0} arquivo(s) extraído(s).
+            Operation completed successfully! {result.filesExtracted || 0} file(s) extracted.
           </Alert>
 
           {result.message && (

@@ -7,7 +7,7 @@
         </encoder>
     </appender>
 
-    <logger name="br.com.joaoborges.filemanager" level="DEBUG"/>
+    <logger name="ca.joaoborges.filemanager" level="DEBUG"/>
     <logger name="org.apache" level="WARN"/>
     <logger name="org.hibernate" level="WARN"/>
     <logger name="org.hibernate.SQL" level="WARN"/>

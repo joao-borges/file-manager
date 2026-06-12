@@ -9,7 +9,7 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
-    <groupId>br.com.joaoborges.file-manager</groupId>
+    <groupId>ca.joaoborges</groupId>
     <artifactId>file-manager</artifactId>
     <version>4.0-SNAPSHOT</version>
     <name>file-manager</name>
@@ -79,7 +79,7 @@
         <dependency>
             <groupId>com.drewnoakes</groupId>
             <artifactId>metadata-extractor</artifactId>
-            <version>2.19.0</version>
+            <version>2.20.0</version>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>

@@ -45,7 +45,7 @@ const DuplicateFinderOperation: FC = () => {
   const handleExecute = async (): Promise<void> => {
     // Validation
     if (!directory.trim()) {
-      setError('Por favor, informe o diretório');
+      setError('Please provide the directory');
       return;
     }
 
@@ -64,7 +64,7 @@ const DuplicateFinderOperation: FC = () => {
     } catch (err) {
       // Handle API errors
       const apiError = err as ApiError;
-      setError(apiError.message || 'Erro ao buscar duplicados');
+      setError(apiError.message || 'Error finding duplicates');
     } finally {
       setLoading(false);
     }
@@ -82,23 +82,23 @@ const DuplicateFinderOperation: FC = () => {
   return (
     <Box>
       <Typography variant="h4" gutterBottom>
-        Remover Arquivos Duplicados
+        Remove Duplicate Files
       </Typography>
 
       <Typography variant="body2" color="text.secondary" gutterBottom>
-        Encontra e remove arquivos duplicados baseado em hash MD5
+        Finds and removes duplicate files based on MD5 hash
       </Typography>
 
       <Paper sx={{ p: 3, mb: 3, mt: 2 }}>
         <TextField
           fullWidth
-          label="Diretório"
+          label="Directory"
           value={directory}
           onChange={(e) => setDirectory(e.target.value)}
           onKeyPress={handleKeyPress}
           margin="normal"
-          placeholder="/caminho/para/diretorio"
-          helperText="O arquivo md5sumfiles.txt deve existir no diretório"
+          placeholder="/path/to/directory"
+          helperText="The md5sumfiles.txt file must exist in the directory"
           disabled={loading}
           required
         />
@@ -111,14 +111,14 @@ const DuplicateFinderOperation: FC = () => {
             startIcon={loading ? <CircularProgress size={20} /> : undefined}
             color="warning"
           >
-            {loading ? 'Processando...' : 'Executar'}
+            {loading ? 'Processing...' : 'Execute'}
           </Button>
         </Box>
 
         <Alert severity="warning" sx={{ mt: 2 }}>
           <Typography variant="body2">
-            <strong>Atenção:</strong> Esta operação irá remover permanentemente arquivos duplicados.
-            Certifique-se de ter um backup antes de continuar.
+            <strong>Warning:</strong> This operation will permanently remove duplicate files.
+            Make sure you have a backup before continuing.
           </Typography>
         </Alert>
       </Paper>
@@ -132,10 +132,10 @@ const DuplicateFinderOperation: FC = () => {
       {result && (
         <Paper sx={{ p: 3 }}>
           <Typography variant="h6" gutterBottom>
-            Resultado
+            Result
           </Typography>
           <Alert severity="success" sx={{ mb: 2 }}>
-            Operação concluída com sucesso! {result.duplicatesRemoved || 0} duplicado(s) removido(s).
+            Operation completed successfully! {result.duplicatesRemoved || 0} duplicate(s) removed.
           </Alert>
 
           {result.message && (

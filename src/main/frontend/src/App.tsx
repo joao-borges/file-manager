@@ -59,31 +59,31 @@ const DRAWER_WIDTH = 280;
 const OPERATIONS: readonly Operation[] = [
   {
     id: 'rename',
-    label: 'Renomear Arquivos',
+    label: 'Rename Files',
     icon: <DriveFileRenameOutline />,
     description: 'Rename files based on patterns',
   },
   {
     id: 'organize',
-    label: 'Organizar Arquivos',
+    label: 'Organize Files',
     icon: <FolderOpen />,
     description: 'Organize files by extension',
   },
   {
     id: 'extract',
-    label: 'Extrair Arquivos',
+    label: 'Extract Files',
     icon: <Unarchive />,
     description: 'Extract files from subdirectories',
   },
   {
     id: 'photo',
-    label: 'Organizar Imagens por Data',
+    label: 'Organize Photos by Date',
     icon: <PhotoLibrary />,
     description: 'Organize photos by EXIF date',
   },
   {
     id: 'duplicate',
-    label: 'Remover Duplicados',
+    label: 'Remove Duplicates',
     icon: <FindReplace />,
     description: 'Find and remove duplicate files',
   },
@@ -131,7 +131,7 @@ const App: FC = () => {
       >
         <Toolbar>
           <Typography variant="h6" noWrap component="div">
-            Gerenciador de Arquivos
+            File Manager
           </Typography>
         </Toolbar>
       </AppBar>

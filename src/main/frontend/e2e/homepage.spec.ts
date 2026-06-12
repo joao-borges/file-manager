@@ -26,11 +26,11 @@ test.describe('Homepage', () => {
 
     // Test navigation to each operation
     const operations = [
-      'Renomear Arquivos',
-      'Organizar Arquivos',
-      'Extrair Arquivos',
-      'Organizar Fotos',
-      'Encontrar Duplicados',
+      'Rename Files',
+      'Organize Files',
+      'Extract Files',
+      'Organize Photos by Date',
+      'Remove Duplicates',
     ];
 
     for (const operation of operations) {

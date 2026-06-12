@@ -77,21 +77,21 @@ const RenameOperation: FC = () => {
   return (
     <Box>
       <Typography variant="h4" gutterBottom>
-        Renomear Arquivos
+        Rename Files
       </Typography>
 
       <Paper sx={{ p: 3, mb: 3 }}>
         <TextField
           fullWidth
-          label="Diretório de Origem"
+          label="Source Directory"
           value={sourceDir}
           onChange={(e) => setSourceDir(e.target.value)}
           onKeyPress={handleKeyPress}
           margin="normal"
-          placeholder="/caminho/para/diretorio"
+          placeholder="/path/to/directory"
           disabled={loading}
           required
-          helperText="Caminho completo do diretório contendo os arquivos"
+          helperText="Full path of the directory containing the files"
           InputProps={{
             endAdornment: (
               <InputAdornment position="end">
@@ -116,7 +116,7 @@ const RenameOperation: FC = () => {
               disabled={loading}
             />
           }
-          label="Incluir subdiretórios"
+          label="Include subdirectories"
         />
 
         <Box sx={{ mt: 2 }}>
@@ -126,7 +126,7 @@ const RenameOperation: FC = () => {
             disabled={loading}
             startIcon={loading ? <CircularProgress size={20} /> : undefined}
           >
-            {loading ? 'Processando...' : 'Executar'}
+            {loading ? 'Processing...' : 'Execute'}
           </Button>
         </Box>
       </Paper>
@@ -140,10 +140,10 @@ const RenameOperation: FC = () => {
       {result && (
         <Paper sx={{ p: 3 }}>
           <Typography variant="h6" gutterBottom>
-            Resultado
+            Result
           </Typography>
           <Alert severity="success" sx={{ mb: 2 }}>
-            Operação concluída com sucesso! {result.filesRenamed || 0} arquivo(s) renomeado(s).
+            Operation completed successfully! {result.filesRenamed || 0} file(s) renamed.
           </Alert>
 
           {result.message && (
