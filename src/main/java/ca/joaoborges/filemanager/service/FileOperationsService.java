@@ -124,7 +124,7 @@ public class FileOperationsService {
 
         // Filter for photos and videos (IMAGE and VIDEO types)
         final List<String> photoAndVideoExtensions = Arrays.asList(
-            "jpg", "jpeg", "png", "bmp",  // Images
+            "jpg", "jpeg", "png", "bmp", "heic", "heif",  // Images
             "mov", "mp4", "avi", "wmv", "mpeg", "mpg"  // Videos
         );
         final ExtensionFilter photoFilter = new ExtensionFilter(photoAndVideoExtensions);

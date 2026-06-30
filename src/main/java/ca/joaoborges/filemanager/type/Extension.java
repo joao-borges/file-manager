@@ -21,6 +21,8 @@ public enum Extension {
     JPEG(5, FileType.IMAGE),
     BMP(6, FileType.IMAGE),
     PNG(6, FileType.IMAGE),
+    HEIC(8, FileType.IMAGE),
+    HEIF(8, FileType.IMAGE),
     MOV(3, FileType.VIDEO),
     MP4(3, FileType.VIDEO),
     AVI(3, FileType.VIDEO),

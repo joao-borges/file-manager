@@ -114,7 +114,7 @@ Example:
 
 Reads EXIF metadata from photos/videos under `sourceDirectory` and moves them
 into date-based folders under `destinationDirectory`. Accepted extensions:
-`jpg`, `jpeg`, `png`, `bmp`, `mov`, `mp4`, `avi`, `wmv`, `mpeg`, `mpg`.
+`jpg`, `jpeg`, `png`, `bmp`, `heic`, `heif`, `mov`, `mp4`, `avi`, `wmv`, `mpeg`, `mpg`.
 
 | Param                  | Type   | Required | Description                          |
 | ---------------------- | ------ | -------- | ------------------------------------ |

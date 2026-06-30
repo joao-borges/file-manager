@@ -28,6 +28,7 @@ import com.drew.imaging.ImageProcessingException;
 import com.drew.metadata.Metadata;
 import com.drew.metadata.exif.ExifDirectoryBase;
 import com.drew.metadata.exif.ExifIFD0Directory;
+import com.drew.metadata.exif.ExifSubIFDDirectory;
 import com.drew.metadata.mov.QuickTimeDirectory;
 import com.drew.metadata.mp4.Mp4Directory;
 
@@ -126,10 +127,18 @@ public class PhotoOrganizer implements FileOperation<PhotoOrganizerResult> {
             return Optional.empty();
         }
 
-        final ExifIFD0Directory directory = metadata.getFirstDirectoryOfType(ExifIFD0Directory.class);
         ZonedDateTime dateTaken = null;
-        if (directory != null) {
-            dateTaken = readDateTag(directory, ExifDirectoryBase.TAG_DATETIME);
+
+        final ExifSubIFDDirectory subDirectory = metadata.getFirstDirectoryOfType(ExifSubIFDDirectory.class);
+        if (subDirectory != null) {
+            dateTaken = readDateTag(subDirectory, ExifDirectoryBase.TAG_DATETIME_ORIGINAL);
+        }
+
+        if (dateTaken == null) {
+            final ExifIFD0Directory directory = metadata.getFirstDirectoryOfType(ExifIFD0Directory.class);
+            if (directory != null) {
+                dateTaken = readDateTag(directory, ExifDirectoryBase.TAG_DATETIME);
+            }
         }
 
         if (dateTaken == null) {
