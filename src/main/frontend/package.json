@@ -6,8 +6,8 @@
   "dependencies": {
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "react-router-dom": "^7.1.1",
-    "axios": "^1.7.9",
+    "react-router-dom": "^7.18.1",
+    "axios": "^1.18.1",
     "@mui/material": "^6.3.2",
     "@mui/icons-material": "^6.3.2",
     "@emotion/react": "^11.14.0",
@@ -24,13 +24,13 @@
     "@testing-library/react": "^16.1.0",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/user-event": "^14.5.2",
-    "@vitest/ui": "^3.0.3",
+    "@vitest/ui": "^3.2.6",
     "jsdom": "^25.0.1",
-    "vitest": "^3.0.3",
+    "vitest": "^3.2.6",
     "@playwright/test": "^1.49.0",
     "playwright": "^1.49.0",
     "typescript": "^5.7.2",
-    "vite": "^6.0.7"
+    "vite": "^6.4.3"
   },
   "scripts": {
     "dev": "vite",
